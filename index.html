@@ -1,280 +1,369 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Universal Decision Control System v2.2</title>
-  <meta name="description" content="Local-first decision review system with decision patterns, CBT distortions, resistance, reframes, actions, and 7-day analytics." />
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; }
-    header { padding: 16px 18px; border-bottom: 1px solid rgba(127,127,127,.35); position: sticky; top: 0; background: Canvas; z-index: 2; }
-    main { padding: 16px 18px; max-width: 1100px; margin: 0 auto; }
-    h1 { font-size: 18px; margin: 0; }
-    .sub { opacity: .8; font-size: 13px; margin-top: 6px; line-height: 1.35; }
-    .grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
-    @media (min-width: 980px) { .grid { grid-template-columns: 1.1fr .9fr; } }
-    .card { border: 1px solid rgba(127,127,127,.35); border-radius: 10px; padding: 14px; }
-    .row { display: grid; gap: 10px; grid-template-columns: 1fr; }
-    @media (min-width: 760px) { .row.two { grid-template-columns: 1fr 1fr; } }
-    @media (min-width: 760px) { .row.three { grid-template-columns: 1fr 1fr 1fr; } }
-    label { font-size: 13px; opacity: .85; display: block; margin: 10px 0 6px; }
-    input, textarea, select, button { width: 100%; box-sizing: border-box; font: inherit; padding: 10px; border-radius: 10px; border: 1px solid rgba(127,127,127,.45); background: Canvas; }
-    textarea { min-height: 84px; resize: vertical; }
-    .small { min-height: 54px; }
-    button { cursor: pointer; }
-    .btnrow { display: grid; gap: 10px; grid-template-columns: 1fr; margin-top: 12px; }
-    @media (min-width: 760px) { .btnrow { grid-template-columns: 1fr 1fr 1fr; } }
-    .note { font-size: 12px; opacity: .82; margin-top: 10px; line-height: 1.35; }
-    .warn { border-color: rgba(255,120,120,.8); box-shadow: 0 0 0 2px rgba(255,120,120,.18) inset; }
-    .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(127,127,127,.35); font-size: 12px; opacity: .9; }
-    .kpis { display: grid; gap: 10px; grid-template-columns: 1fr; }
-    @media (min-width: 760px) { .kpis { grid-template-columns: 1fr 1fr; } }
-    .kpi { border: 1px solid rgba(127,127,127,.35); border-radius: 10px; padding: 12px; }
-    .kpi .v { font-size: 22px; margin-top: 6px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-    th, td { border-bottom: 1px solid rgba(127,127,127,.25); padding: 8px 6px; vertical-align: top; }
-    th { text-align: left; opacity: .85; }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .linkbtn { padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(127,127,127,.45); background: Canvas; cursor: pointer; font-size: 13px; }
-    .muted { opacity: .75; }
-    .footer { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(127,127,127,.25); font-size: 12px; opacity: .85; line-height: 1.4; }
-    .req { color: rgb(255,90,90); font-weight: 700; }
-    .hint { border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: 10px; margin-top: 10px; }
-    details.help { border: 1px solid rgba(127,127,127,.18); border-radius: 10px; padding: 8px 10px; margin: 6px 0 0; }
-    details.help summary { cursor: pointer; font-size: 12px; opacity: .85; }
-    details.help .h { font-size: 12px; opacity: .85; line-height: 1.35; margin-top: 8px; }
-    details.help .ex { margin-top: 6px; opacity: .9; }
-    .tophelp { border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: 12px; margin-bottom: 14px; }
-    .tophelp h2 { font-size: 14px; margin: 0 0 6px; }
-    .tophelp p { margin: 6px 0; font-size: 12px; opacity: .85; line-height: 1.35; }
-    canvas { width: 100%; height: 160px; border: 1px solid rgba(127,127,127,.25); border-radius: 10px; }
-    .badge { display:inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(127,127,127,.35); font-size: 12px; opacity: .85; }
-    .patternBox { border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: 10px; margin-top: 8px; }
-    .patternBox .t { font-size: 12px; opacity: .8; }
-    .patternBox .v { margin-top: 6px; font-size: 12px; opacity: .9; line-height: 1.35; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Universal Decision Control System v2.5</title>
+<meta name="description" content="Local-first decision review system with a 1–7 guided flow, universal patterns, and a post-save Decision Breakdown summary." />
 
-<style id="force-dark-theme">
-/* Force dark theme everywhere */
-html, body {
-  background: #000000 !important;
-  color: #ffffff !important;
-}
-header, main, dialog, section, article, div {
-  background: transparent !important;
-}
-header {
-  background: #000000 !important;
-  border-bottom: 1px solid #2a2a2a !important;
-}
-.card, .tophelp, .kpi, .hint, details.help, .patternBox {
-  background: #0f0f0f !important;
-  border-color: #2a2a2a !important;
-}
-input, textarea, select, button, pre, table, th, td {
-  background: #141414 !important;
-  color: #ffffff !important;
-  border-color: #3a3a3a !important;
-}
-button, .linkbtn {
-  background: #1a1a1a !important;
-}
-button:hover, .linkbtn:hover {
-  background: #242424 !important;
-}
-a { color: #9bdcff !important; }
-.muted, .sub, .note { color: rgba(255,255,255,.78) !important; opacity: 1 !important; }
-.pill, .badge { border-color: #3a3a3a !important; background: #0f0f0f !important; color: rgba(255,255,255,.9) !important; }
-table { background: #0f0f0f !important; }
-th, td { border-bottom-color: #2a2a2a !important; }
-canvas { background: #0f0f0f !important; border-color: #2a2a2a !important; }
-dialog::backdrop { background: rgba(0,0,0,.7) !important; }
+<style id="base-style">
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; }
+  header { padding: 16px 18px; border-bottom: 1px solid rgba(127,127,127,.35); position: fixed; top: 0; left: 0; right: 0; z-index: 10; }
+  body { padding-top: 72px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  html { scroll-behavior: auto; overflow-anchor: none; scrollbar-gutter: stable; }
+  main, .summaryBox { overflow-anchor: none; }
+  main { padding: 16px 18px; max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 18px; margin: 0; }
+  .sub { opacity: .8; font-size: 13px; margin-top: 6px; line-height: 1.35; }
+  .grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
+  @media (min-width: 980px) { .grid { grid-template-columns: 1.1fr .9fr; } }
+  .card { border: 1px solid rgba(127,127,127,.35); border-radius: 10px; padding: 14px; }
+  .row { display: grid; gap: 10px; grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .row.two { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 760px) { .row.three { grid-template-columns: 1fr 1fr 1fr; } }
+  label { font-size: 13px; opacity: .85; display: block; margin: 10px 0 6px; }
+  input, textarea, select, button { width: 100%; box-sizing: border-box; font: inherit; padding: 10px; border-radius: 10px; border: 1px solid rgba(127,127,127,.45); }
+  textarea { min-height: 84px; resize: vertical; }
+  .small { min-height: 54px; }
+  button { cursor: pointer; }
+  .btnrow { display: grid; gap: 10px; grid-template-columns: 1fr; margin-top: 12px; }
+  @media (min-width: 760px) { .btnrow { grid-template-columns: 1fr 1fr 1fr; } }
+  .note { font-size: 12px; opacity: .82; margin-top: 10px; line-height: 1.35; }
+  .warn { border-color: rgba(255,120,120,.85) !important; box-shadow: 0 0 0 2px rgba(255,120,120,.18) inset; }
+  .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(127,127,127,.35); font-size: 12px; opacity: .9; }
+  .kpis { display: grid; gap: 10px; grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .kpis { grid-template-columns: 1fr 1fr; } }
+  .kpi { border: 1px solid rgba(127,127,127,.35); border-radius: 10px; padding: 12px; }
+  .kpi .v { font-size: 22px; margin-top: 6px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  th, td { border-bottom: 1px solid rgba(127,127,127,.25); padding: 8px 6px; vertical-align: top; }
+  th { text-align: left; opacity: .85; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .linkbtn { padding: 8px 10px; border-radius: 10px; border: 1px solid rgba(127,127,127,.45); cursor: pointer; font-size: 13px; }
+  details.help { border: 1px solid rgba(127,127,127,.18); border-radius: 10px; padding: 8px 10px; margin: 6px 0 0; }
+  details.help summary { cursor: pointer; font-size: 12px; opacity: .85; }
+  details.help .h { font-size: 12px; opacity: .85; line-height: 1.35; margin-top: 8px; }
+  details.help .ex { margin-top: 6px; opacity: .9; }
+  .stepTitle { display:flex; align-items:center; gap:10px; margin-top: 10px; }
+  .stepNum { width: 30px; height: 30px; border-radius: 999px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(127,127,127,.35); font-weight: 700; font-size: 13px; flex:0 0 auto; }
+  .stepText { font-weight: 700; }
+  .divider { height: 1px; margin: 14px 0; opacity: .35; background: currentColor; }
+  .req { color: rgb(255,90,90); font-weight: 700; }
+  .summaryBox { border: 1px solid rgba(127,127,127,.35); border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+  .summaryBox h2 { font-size: 14px; margin: 0 0 10px; }
+  .summaryBox { position: relative; }
+  .summaryTools { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 2px; }
+  .summaryTools button { width: auto; padding: 8px 10px; }
+  .highlightPulse { animation: pulse 1.2s ease-out 1; }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,255,255,.18); }
+    60% { box-shadow: 0 0 0 6px rgba(255,255,255,.10); }
+    100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+  }
+  .bigResult { display:grid; gap:10px; grid-template-columns: 1fr; margin-top: 10px; }
+  @media (min-width: 760px) { .bigResult { grid-template-columns: 1fr 1fr 1fr; } }
+  .bigCard { border: 1px solid rgba(127,127,127,.35); border-radius: 12px; padding: 12px; }
+  .bigCard .t { font-size: 12px; opacity: .8; }
+  .bigCard .v { font-size: 20px; margin-top: 6px; }
+  .nextBox { border: 1px solid rgba(127,127,127,.25); border-radius: 12px; padding: 12px; margin-top: 10px; }
+  .nextBox .t { font-weight: 700; margin-bottom: 6px; }
+  .nextBox { box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset; }
+
+  .summaryLine { margin: 8px 0; font-size: 13px; line-height: 1.35; }
+  .how { border: 1px solid rgba(127,127,127,.18); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+  .how h2 { font-size: 14px; margin: 0 0 8px; }
+  .how p { margin: 8px 0; font-size: 13px; line-height: 1.35; opacity: .9; }
+  canvas { width: 100%; height: 160px; border: 1px solid rgba(127,127,127,.25); border-radius: 10px; }
+  dialog::backdrop { background: rgba(0,0,0,.7); }
+
+  /* Guided tour */
+  .tourOverlay { position: fixed; inset: 0; background: rgba(0,0,0,.78); z-index: 1000; display: none; }
+  .tourOverlay.active { display: block; }
+  .tourHole { position: absolute; border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,.78); outline: 2px solid rgba(255,255,255,.18); }
+  .tourCard { position: absolute; max-width: 360px; background: #0f0f0f; border: 1px solid #2a2a2a; border-radius: 12px; padding: 12px; color: #fff; }
+  .tourCard .t { font-weight: 800; margin-bottom: 6px; }
+  .tourCard .b { font-size: 13px; line-height: 1.35; opacity: .92; }
+  .tourCard .controls { display:flex; gap:8px; margin-top: 10px; flex-wrap: wrap; justify-content:flex-end; }
+  .tourCard .controls button { width: auto; }
+  .tourBadge { display:inline-block; border:1px solid #3a3a3a; border-radius:999px; padding: 3px 10px; font-size:12px; opacity:.9; margin-left: 8px; }
+  .tourHighlight { position: relative; z-index: 2; }
+
 </style>
 
+<style id="force-dark-theme">
+  html, body { background: #000000 !important; color: #ffffff !important; }
+  header { background: #000000 !important; border-bottom: 1px solid #2a2a2a !important; }
+  .card, .kpi, details.help, .summaryBox, .how { background: #0f0f0f !important; border-color: #2a2a2a !important; }
+  input, textarea, select, button, pre, table, th, td { background: #141414 !important; color: #ffffff !important; border-color: #3a3a3a !important; }
+  button, .linkbtn { background: #1a1a1a !important; }
+  button:hover, .linkbtn:hover { background: #242424 !important; }
+  .note, .sub { color: rgba(255,255,255,.78) !important; opacity: 1 !important; }
+  .pill { border-color: #3a3a3a !important; background: #0f0f0f !important; color: rgba(255,255,255,.9) !important; }
+  canvas { background: #0f0f0f !important; border-color: #2a2a2a !important; }
+  .divider { background: #2a2a2a !important; }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Universal Decision Control System</h1>
-    <div class="sub">
-      Local-first. Stored on this device only. Export regularly.
-      <span class="pill" id="storagePill">Storage: local</span>
-    </div>
-  </header>
+<header>
+  <h1>Universal Decision Control System</h1>
+  <div class="sub">
+    Local-first. Stored on this device only. Export weekly.
+    <span class="pill" id="storagePill">Storage: local</span>
+    <span class="pill" style="margin-left:10px; cursor:pointer;" id="startTourBtn" role="button" tabindex="0">Guide</span>
+  </div>
+</header>
 
-  <main>
-    <div class="tophelp">
-      <h2>How to complete an entry fast</h2>
-      <p>Step 1. Choose a decision pattern. Let it prefill your reframe and action rule.</p>
-      <p>Step 2. Write the trigger as facts only and write the automatic thought.</p>
-      <p>Step 3. Pick one emotion and rate intensity before.</p>
-      <p>Step 4. Adjust the reframe if needed, then pick one small action and a real deadline.</p>
-      <p>Step 5. After you act, fill in experiment result and evidence, then mark done.</p>
-      <p>Rule: if intensity before is 7 or higher, action and deadline are required.</p>
-    </div>
+<main>
+  <div id="postSaveSummary" class="summaryBox" aria-live="polite"></div>
 
-    <div class="grid">
-      <section class="card" aria-label="New entry">
-        <div class="row two">
-          <div>
-            <label for="entryDate">Date and time</label>
-            <input id="entryDate" type="datetime-local" />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Use the time the trigger happened, or the time you are logging it.</div>
-              <div class="ex">Example: 2026-03-02 13:10</div>
-            </details>
-          </div>
-          <div>
-            <label for="contextTag">Life area</label>
-            <select id="contextTag">
-              <option value="Work">Work</option>
-              <option value="Relationships">Relationships</option>
-              <option value="Health">Health</option>
-              <option value="Money">Money</option>
-              <option value="School">School</option>
-              <option value="Family">Family</option>
-              <option value="Personal growth">Personal growth</option>
-              <option value="Other">Other</option>
-            </select>
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Pick the area this belongs to. This helps you spot patterns.</div>
-              <div class="ex">Example: Work</div>
-            </details>
-          </div>
-        </div>
+  <div class="grid">
+    <section class="card" aria-label="1 to 7 entry flow">
 
-        <div class="row two">
-          <div>
-            <label for="metricPreset">Primary outcome metric</label>
-            <select id="metricPreset">
-              <option value="Conversations">Conversations</option>
-              <option value="Calls made">Calls made</option>
-              <option value="Study sessions">Study sessions</option>
-              <option value="Training sessions">Training sessions</option>
-              <option value="Pages written">Pages written</option>
-              <option value="Applications sent">Applications sent</option>
-              <option value="Exposure reps">Exposure reps</option>
-              <option value="Other">Other (custom)</option>
-            </select>
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Choose one weekly number you want to increase. It should reflect real effort, not vanity.</div>
-              <div class="ex">Example: Calls made</div>
-            </details>
+      <div class="tourStep" id="tour-intro" data-step="0">
+<div class="how" aria-label="How to use">
+        <h2>How to use (fast, but not confusing)</h2>
+        <p>This is a 1 to 7 checklist. Start at step 1. End at step 7. Then hit Save.</p>
+        <p>After every Save, the app prints a Decision Breakdown at the top. That is your simple explanation of what just happened.</p>
+        <p>If your intensity is 7 or higher, you must enter an Action and a Deadline. That is the “no escape hatch” rule.</p>
+        <details class="help" style="margin-top:10px;">
+          <summary>One full example (copy this if you want)</summary>
+          <div class="h">
+            1 Pattern: Avoidance Loop<br>
+            2 Trigger: I opened my outreach list at 10:00. I scrolled for 6 minutes. I did not message anyone.<br>
+            3 Thought: If I get ignored, it proves this is not working.<br>
+            4 Emotion: Anxiety. Intensity 8 before. 5 after.<br>
+            5 Reframe: Avoiding makes the fear bigger. One message shrinks the fear.<br>
+            6 Action: Send 1 message now. Stop after 1.<br>
+            Deadline: Today at 12:30.<br>
+            7 Result: I sent it. Nothing exploded. I felt calmer.<br>
+            Evidence: Screenshot of sent message.<br>
+            Scoreboard: Conversations = 1.<br>
+            Identity: I do one uncomfortable rep even when anxious.
           </div>
-          <div>
-            <label for="metricCustom">Custom metric name (only if Other)</label>
-            <input id="metricCustom" type="text" placeholder="Example: Outreach messages" />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">If you choose Other, type the name here. The dashboard will use it everywhere.</div>
-              <div class="ex">Example: Outreach messages</div>
-            </details>
-          </div>
-        </div>
-
-        <label for="decisionPattern">Decision pattern</label>
-        <select id="decisionPattern">
-          <option value="">Select a pattern</option>
-          <optgroup label="Negative patterns">
-            <option value="All-or-Nothing">All-or-Nothing</option>
-            <option value="Catastrophizing">Catastrophizing</option>
-            <option value="Mind Reading">Mind Reading</option>
-            <option value="Emotional Reasoning">Emotional Reasoning</option>
-            <option value="Overgeneralizing">Overgeneralizing</option>
-            <option value="Avoidance Loop">Avoidance Loop</option>
-            <option value="Shame Loop">Shame Loop</option>
-          </optgroup>
-          <optgroup label="Positive patterns">
-            <option value="Incremental Progress">Incremental Progress</option>
-            <option value="Evidence Based">Evidence Based</option>
-            <option value="Identity Based">Identity Based</option>
-            <option value="Exposure Rule">Exposure Rule</option>
-            <option value="Data Over Drama">Data Over Drama</option>
-            <option value="Long Game">Long Game</option>
-            <option value="Recovery Rule">Recovery Rule</option>
-          </optgroup>
-        </select>
-        <div id="patternBox" class="patternBox" style="display:none;">
-          <div class="t">Pattern suggestions</div>
-          <div class="v" id="patternSuggestion"></div>
-        </div>
-        <details class="help">
-          <summary>Help and example</summary>
-          <div class="h">Pick the pattern that fits your moment. The app will suggest a reframe and action rule. You can edit them.</div>
-          <div class="ex">Example: Avoidance Loop</div>
         </details>
+      </div>
 
-        <label for="trigger">Trigger event (facts only)</label>
-        <textarea id="trigger" placeholder="Example: I studied 20 minutes and stopped."></textarea>
-        <details class="help">
-          <summary>Help and example</summary>
-          <div class="h">Write only what a camera would record. No meaning. No conclusion.</div>
-          <div class="ex">Example: I opened the laptop at 9:00. I closed it at 9:12.</div>
-        </details>
-
-        <label for="thought">Automatic thought</label>
-        <textarea id="thought" placeholder="Example: I can never stick to anything."></textarea>
-        <details class="help">
-          <summary>Help and example</summary>
-          <div class="h">Write the first thought that hit you. Keep it raw. Do not fix it yet.</div>
-          <div class="ex">Example: This is pointless. I am going to fail anyway.</div>
-        </details>
-
-        <div class="hint" id="thoughtHints" style="display:none;">
-          <div class="note" id="hintText" style="margin-top:0;"> </div>
+      <div class="row two">
+        <div>
+          <label for="entryDate">Date and time</label>
+          <input id="entryDate" type="datetime-local" />
         </div>
-
-        <div class="row two">
-          <div>
-            <label for="emotionPick">Emotion</label>
-            <select id="emotionPick">
-              <option value="">Select an emotion</option>
-              <optgroup label="Negative">
-                <option>Anxiety</option><option>Fear</option><option>Overwhelm</option><option>Frustration</option>
-                <option>Anger</option><option>Resentment</option><option>Sadness</option><option>Hopelessness</option>
-                <option>Discouragement</option><option>Shame</option><option>Guilt</option><option>Embarrassment</option>
-                <option>Loneliness</option><option>Jealousy</option><option>Disappointment</option><option>Insecurity</option>
-                <option>Doubt</option><option>Impatience</option>
-              </optgroup>
-              <optgroup label="Positive">
-                <option>Calm</option><option>Confidence</option><option>Hope</option><option>Motivation</option>
-                <option>Determination</option><option>Gratitude</option><option>Pride</option><option>Relief</option>
-                <option>Clarity</option><option>Trust</option><option>Excitement</option><option>Focus</option><option>Optimism</option>
-              </optgroup>
-              <optgroup label="Other">
-                <option value="__OTHER__">Other (type it)</option>
-              </optgroup>
-            </select>
-            <input id="emotionOther" type="text" placeholder="Type emotion (only if Other)" style="display:none; margin-top:8px;" />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Pick one emotion word. If you feel multiple, pick the strongest one.</div>
-              <div class="ex">Example: Anxiety</div>
-            </details>
-          </div>
-          <div>
-            <label for="beliefBefore">Belief strength before (0 to 100)</label>
-            <input id="beliefBefore" type="number" min="0" max="100" step="1" value="60" />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">How much you believe the automatic thought right now.</div>
-              <div class="ex">Example: 80 means you believe it strongly.</div>
-            </details>
-          </div>
+        <div>
+          <label for="contextTag">Life area</label>
+          <select id="contextTag">
+            <option>Work</option><option>Relationships</option><option>Health</option><option>Money</option>
+            <option>School</option><option>Family</option><option>Personal growth</option><option>Other</option>
+          </select>
         </div>
+      </div>
 
-        <div class="row three">
-          <div>
-            <label for="intensityBefore">Intensity before (0 to 10)</label>
-            <input id="intensityBefore" type="number" min="0" max="10" step="1" value="5" />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Rate how strong the emotion feels right now. This is your baseline.</div>
-              <div class="ex">Example: 8</div>
-            </details>
-          </div>
+      <div class="row two">
+        <div>
+          <label for="metricPreset">Primary outcome metric</label>
+          <select id="metricPreset">
+            <option>Conversations</option><option>Calls made</option><option>Study sessions</option><option>Training sessions</option>
+            <option>Pages written</option><option>Applications sent</option><option>Exposure reps</option>
+            <option value="Other">Other (custom)</option>
+          </select>
+        </div>
+        <div>
+          <label for="metricCustom">Custom metric name (only if Other)</label>
+          <input id="metricCustom" type="text" placeholder="Example: Outreach messages" />
+        </div>
+      </div>
+
+      
+</div>
+<div class="divider"></div>
+
+      <div class="tourStep" id="tour-step-1" data-step="1">
+<div class="stepTitle"><div class="stepNum">1</div><div class="stepText">Pattern</div></div>
+      <label for="decisionPattern">Decision pattern</label>
+      <select id="decisionPattern">
+        <option value="">Select a pattern</option>
+        <optgroup label="Negative patterns">
+          <option>All-or-Nothing</option>
+          <option>Catastrophizing</option>
+          <option>Mind Reading</option>
+          <option>Emotional Reasoning</option>
+          <option>Overgeneralizing</option>
+          <option>Avoidance Loop</option>
+          <option>Shame Loop</option>
+        </optgroup>
+        <optgroup label="Positive patterns">
+          <option>Incremental Progress</option>
+          <option>Evidence Based</option>
+          <option>Identity Based</option>
+          <option>Exposure Rule</option>
+          <option>Data Over Drama</option>
+          <option>Long Game</option>
+          <option>Recovery Rule</option>
+        </optgroup>
+      </select>
+      <div class="note" id="patternHint" style="margin-top:6px;"></div>
+      <details class="help"><summary>Help and example</summary>
+        <div class="h">Pick the pattern that matches what you actually did. Not what you wish you did.</div>
+        <div class="h">If you pick a pattern, the app will prefill a suggested reframe and action. You can edit them.</div>
+        <div class="ex">Example: You delayed a hard task by scrolling. That is usually Avoidance Loop.</div>
+      </details>
+
+      
+</div>
+<div class="divider"></div>
+
+      <div class="tourStep" id="tour-step-2" data-step="2">
+<div class="stepTitle"><div class="stepNum">2</div><div class="stepText">Trigger</div></div>
+      <label for="trigger">Trigger (facts only)</label>
+      <textarea id="trigger" placeholder="Example: I opened my call list at 10:00 and scrolled for 6 minutes. I did not tap Call."></textarea>
+      <details class="help"><summary>Help and example</summary>
+        <div class="h">Write what a camera would record. No meaning, no conclusions.</div>
+        <div class="ex">Example: I sent a message at 9:02. No reply by 11:00.</div>
+      </details>
+
+      
+</div>
+<div class="divider"></div>
+
+      <div class="tourStep" id="tour-step-3" data-step="3">
+<div class="stepTitle"><div class="stepNum">3</div><div class="stepText">Automatic thought</div></div>
+      <label for="thought">Automatic thought</label>
+      <textarea id="thought" placeholder="Example: If they say no, it proves I am not built for this."></textarea>
+      <details class="help"><summary>Help and example</summary>
+        <div class="h">Write the first thought that hit you. Keep it raw. Do not fix it yet.</div>
+        <div class="ex">Example: This is pointless. I will fail anyway.</div>
+      </details>
+
+      
+</div>
+<div class="divider"></div>
+
+      <div class="tourStep" id="tour-step-4" data-step="4">
+<div class="stepTitle"><div class="stepNum">4</div><div class="stepText">Emotion and intensity</div></div>
+      <div class="row three">
+        <div>
+          <label for="emotionPick">Emotion</label>
+          <select id="emotionPick">
+            <option value="">Select an emotion</option>
+            <optgroup label="Negative">
+              <option>Anxiety</option><option>Fear</option><option>Overwhelm</option><option>Frustration</option>
+              <option>Anger</option><option>Sadness</option><option>Hopelessness</option><option>Shame</option>
+              <option>Guilt</option><option>Doubt</option><option>Insecurity</option><option>Loneliness</option>
+            </optgroup>
+            <optgroup label="Positive">
+              <option>Calm</option><option>Confidence</option><option>Hope</option><option>Motivation</option>
+              <option>Relief</option><option>Clarity</option><option>Focus</option><option>Optimism</option>
+            </optgroup>
+            <optgroup label="Other"><option value="__OTHER__">Other (type it)</option></optgroup>
+          </select>
+          <input id="emotionOther" type="text" placeholder="Type emotion (only if Other)" style="display:none; margin-top:8px;" />
+        </div>
+        <div>
+          <label for="intensityBefore">Intensity before (0 to 10)</label>
+          <input id="intensityBefore" type="number" min="0" max="10" step="1" value="5" />
+        </div>
+        <div>
+          <label for="intensityAfter">Intensity after (0 to 10)</label>
+          <input id="intensityAfter" type="number" min="0" max="10" step="1" value="3" />
+        </div>
+      </div>
+
+      <div class="row two">
+        <div>
+          <label for="beliefBefore">Belief strength before (0 to 100)</label>
+          <input id="beliefBefore" type="number" min="0" max="100" step="1" value="60" />
+        </div>
+        <div>
+          <label for="beliefAfter">Belief strength after (0 to 100)</label>
+          <input id="beliefAfter" type="number" min="0" max="100" step="1" value="40" />
+        </div>
+      </div>
+
+      <details class="help"><summary>Help and example</summary>
+        <div class="h">Intensity is how strong the feeling is right now. 0 is none. 10 is peak.</div>
+        <div class="h">Belief is how much you believe the thought. 0 means you do not buy it. 100 means you fully buy it.</div>
+        <div class="ex">Example: Thought is “I will fail.” Belief before 80. After reframing, belief after 45.</div>
+      </details>
+
+      <div class="note" id="reqRuleNote">Rule: if intensity before is 7 or higher, Action and Deadline are required.</div>
+
+      
+</div>
+<div class="divider"></div>
+
+      <div class="tourStep" id="tour-step-5" data-step="5">
+<div class="stepTitle"><div class="stepNum">5</div><div class="stepText">Reframe</div></div>
+      <label for="reframe">Strategic reframe</label>
+      <textarea id="reframe" placeholder="Example: Avoiding calls increases fear. One call reduces fear."></textarea>
+
+      <details class="help"><summary>Help and example</summary>
+        <div class="h">One calm sentence grounded in facts that points toward your next move. Not a pep talk.</div>
+        <div class="h">If you cannot write a reframe, write a rule instead.</div>
+        <div class="ex">Example reframe: The emotion is real, but it does not predict the outcome.</div>
+        <div class="ex">Example rule: One rep beats zero reps.</div>
+      </details>
+
+      
+</div>
+<div class="divider"></div>
+
+      <div class="tourStep" id="tour-step-6" data-step="6">
+<div class="stepTitle"><div class="stepNum">6</div><div class="stepText">Action and deadline</div></div>
+      <div class="row two">
+        <div>
+          <label for="action">Action <span class="req" id="actionReq" style="display:none;">required</span></label>
+          <textarea id="action" class="small" placeholder="Example: Make 1 call, then stop."></textarea>
+        </div>
+        <div>
+          <label for="deadline">Deadline <span class="req" id="deadlineReq" style="display:none;">required</span></label>
+          <input id="deadline" type="datetime-local" />
+        </div>
+      </div>
+      <details class="help"><summary>Help and example</summary>
+        <div class="h">Action must be small enough that you can do it even if you still feel bad.</div>
+        <div class="h">Deadline must be specific. Not “today.” Use an actual time.</div>
+        <div class="ex">Bad: “Work on it later.”</div>
+        <div class="ex">Good: “Send one message by 2:30 PM.”</div>
+      </details>
+
+      
+</div>
+<div class="divider"></div>
+
+      <div class="stepTitle"><div class="stepNum">7</div><div class="stepText">Result and evidence</div></div>
+      <div class="row two">
+        <div>
+          <label for="experiment">Result (what happened)</label>
+          <textarea id="experiment" class="small" placeholder="Example: I made 1 call. No disaster."></textarea>
+        </div>
+        <div>
+          <label for="evidence">Evidence (proof object)</label>
+          <textarea id="evidence" class="small" placeholder="Example: Call log screenshot at 12:18 PM."></textarea>
+        </div>
+      </div>
+
+      <div class="row two">
+        <div>
+          <label for="metricValue"><span id="metricLabelInline">Primary outcome count</span> (number)</label>
+          <input id="metricValue" type="number" min="0" max="999" step="1" value="0" />
+        </div>
+        <div>
+          <label for="identity">Identity reinforced</label>
+          <input id="identity" type="text" placeholder="Example: I do one uncomfortable rep even when anxious." />
+        </div>
+      </div>
+
+      <details class="help"><summary>Help and example</summary>
+        <div class="h">Result is what happened. Evidence is the proof object you could show someone.</div>
+        <div class="h">Scoreboard is the number that matters. Identity is the sentence that makes it stick.</div>
+        <div class="ex">Result: I published the post.</div>
+        <div class="ex">Evidence: Screenshot of the post with time.</div>
+        <div class="ex">Scoreboard: Conversations = 1.</div>
+        <div class="ex">Identity: I act even when uncertain.</div>
+      </details>
+
+      <details class="help" style="margin-top:10px;">
+        <summary>Advanced fields (optional)</summary>
+        <div class="row two" style="margin-top:10px;">
           <div>
             <label for="distortion">Distortion type</label>
             <select id="distortion">
@@ -290,1095 +379,1090 @@ dialog::backdrop { background: rgba(0,0,0,.7) !important; }
               <option value="Fortune telling">Fortune telling</option>
               <option value="Other">Other</option>
             </select>
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Pick the thinking mistake that best matches your thought.</div>
-              <div class="ex">Example: "I can never stick to anything" often fits Overgeneralizing.</div>
-            </details>
           </div>
           <div>
-            <label for="intensityAfter">Intensity after (0 to 10)</label>
-            <input id="intensityAfter" type="number" min="0" max="10" step="1" value="3" />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">After you write the reframe, re-rate the emotion. You want to see a drop.</div>
-              <div class="ex">Example: from 8 down to 5</div>
-            </details>
-          </div>
-        </div>
-
-        <div class="row two">
-          <div>
-            <label for="beliefAfter">Belief strength after (0 to 100)</label>
-            <input id="beliefAfter" type="number" min="0" max="100" step="1" value="40" />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">After the reframe, how much do you still believe the old thought.</div>
-              <div class="ex">Example: 40 means it softened.</div>
-            </details>
-          </div>
-          <div>
-            <label for="resistance">Resistance (why you do not want to change the thought)</label>
-            <textarea id="resistance" class="small" placeholder="Example: If I stop being harsh, I fear I will get lazy."></textarea>
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Write the hidden reason you cling to the thought. This reduces self-sabotage.</div>
-              <div class="ex">Example: If I stop worrying, I might stop preparing.</div>
-            </details>
-          </div>
-        </div>
-
-        <label for="reframe">Strategic reframe</label>
-        <textarea id="reframe" placeholder="Example: I stopped at 12 minutes. That means my plan is too big. I can do 10 minutes today."></textarea>
-        <details class="help">
-          <summary>Help and example</summary>
-          <div class="h">One calm sentence that matches reality and points to your next move.</div>
-          <div class="ex">Example: Progress is repetition. I will do one small rep now.</div>
-        </details>
-
-        <div class="row two">
-          <div>
-            <label for="action">Action <span class="req" id="actionReq" style="display:none;">required</span></label>
-            <textarea id="action" class="small" placeholder="Example: Study for 10 minutes, then stop."></textarea>
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Pick one action that creates proof. Keep it small and clear.</div>
-              <div class="ex">Example: Do 1 outreach message. Do not do 10.</div>
-            </details>
-          </div>
-          <div>
-            <label for="deadline">Action deadline <span class="req" id="deadlineReq" style="display:none;">required</span></label>
-            <input id="deadline" type="datetime-local" />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Give the action a real deadline so you do not drift.</div>
-              <div class="ex">Example: Today 6:00 PM</div>
-            </details>
-          </div>
-        </div>
-
-        <div class="row two">
-          <div>
-            <label for="experiment">Behavioral experiment result (what happened)</label>
-            <textarea id="experiment" class="small" placeholder="Example: I expected it to be awful. It was fine."></textarea>
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">After you act, write what happened. This is how belief changes.</div>
-              <div class="ex">Example: I studied 10 minutes and felt less anxious after.</div>
-            </details>
-          </div>
-          <div>
-            <label for="evidence">Evidence created (proof you can point to)</label>
-            <textarea id="evidence" class="small" placeholder="Example: Screenshot, timer photo, completed checklist."></textarea>
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Write the proof object. Screenshot, count, schedule, photo. Anything verifiable.</div>
-              <div class="ex">Example: Timer screenshot showing 10 minutes.</div>
-            </details>
-          </div>
-        </div>
-
-        <div class="row two">
-          <div>
-            <label for="metricValue"><span id="metricLabelInline">Primary outcome count</span> (number)</label>
-            <input id="metricValue" type="number" min="0" max="999" step="1" value="0" />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">Count the real work units you did. Keep it honest. Keep it simple.</div>
-              <div class="ex">Example: Calls made = 3</div>
-            </details>
-          </div>
-          <div>
-            <label for="identity">Identity reinforced</label>
-            <input id="identity" type="text" placeholder="Example: I do small reps even when I feel stressed." />
-            <details class="help">
-              <summary>Help and example</summary>
-              <div class="h">One sentence identity you are training. This keeps you consistent.</div>
-              <div class="ex">Example: I execute calmly, even when I feel uncertainty.</div>
-            </details>
+            <label for="resistance">Resistance (why keep the thought)</label>
+            <textarea id="resistance" class="small" placeholder="Example: If I stop worrying, I fear I will stop preparing."></textarea>
           </div>
         </div>
 
         <label for="notes">Notes</label>
-        <textarea id="notes" class="small" placeholder="Example: My thoughts spike after scrolling at night."></textarea>
-        <details class="help">
-          <summary>Help and example</summary>
-          <div class="h">Anything you want to remember later. Keep it short.</div>
-          <div class="ex">Example: Avoid phone for 30 minutes after waking.</div>
-        </details>
+        <textarea id="notes" class="small" placeholder="Example: Anxiety spikes when I try to do 3 calls. One call feels possible."></textarea>
+      </details>
 
-        <div class="btnrow">
-          <button id="saveBtn" type="button">Save entry</button>
-          <button id="clearBtn" type="button">Clear form</button>
-          <button id="quickBtn" type="button">Quick prompts</button>
+      <div class="tourStep" id="tour-actions" data-step="8">
+<div class="btnrow">
+        <button id="saveBtn" type="button">Save entry</button>
+        <button id="clearBtn" type="button">Clear form</button>
+        <button id="quickBtn" type="button">Quick prompts</button>
+      </div>
+</div>
+
+
+      <div class="note">After every save, a Decision Breakdown will appear at the top of this page.</div>
+    </section>
+
+    <section class="card" aria-label="Dashboard">
+      <div class="row two">
+        <div>
+          <label for="refDate">Weekly reference date</label>
+          <input id="refDate" type="date" />
         </div>
+        <div style="padding-top:28px;" class="sub">Last 7 days ending on the reference date.</div>
+      </div>
 
-        <div class="note">
-          Rule: if intensity before is 7 or higher, you must choose an action and a deadline before saving.
+      <div class="kpis" style="margin-top: 10px;">
+        <div class="kpi"><div class="sub">Entries (last 7 days)</div><div class="v" id="kpiEntries">0</div></div>
+        <div class="kpi"><div class="sub">Average intensity before</div><div class="v" id="kpiAvgBefore">0.0</div></div>
+        <div class="kpi"><div class="sub">Average intensity after</div><div class="v" id="kpiAvgAfter">0.0</div></div>
+        <div class="kpi"><div class="sub">Average drop</div><div class="v" id="kpiDrop">0.0</div></div>
+        <div class="kpi"><div class="sub">Action completion rate</div><div class="v" id="kpiCompletion">0%</div></div>
+        <div class="kpi"><div class="sub"><span id="kpiMetricName">Primary outcome</span> (last 7 days)</div><div class="v" id="kpiMetricTotal">0</div></div>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <div class="actions">
+          <button class="linkbtn" id="exportBtn" type="button">Export JSON</button>
+          <button class="linkbtn" id="importBtn" type="button">Import JSON</button>
+          <input id="importFile" type="file" accept="application/json" style="display:none;" />
+          <button class="linkbtn" id="wipeBtn" type="button">Wipe local data</button>
         </div>
-      </section>
+        <div class="note">Export weekly. GitHub Pages hosts the file, not your data.</div>
+      </div>
 
-      <section class="card" aria-label="Dashboard">
-        <div class="row two">
-          <div>
-            <label for="refDate">Weekly reference date</label>
-            <input id="refDate" type="date" />
-          </div>
-          <div class="muted" style="padding-top: 28px;">
-            Last 7 days ending on the reference date.
-          </div>
-        </div>
+      <div style="margin-top: 12px;">
+        <div class="sub">Intensity overlay (last 7 days). Before is solid. After is light.</div>
+        <canvas id="overlayCanvas" width="900" height="220"></canvas>
+      </div>
 
-        <div class="kpis" style="margin-top: 10px;">
-          <div class="kpi"><div class="muted">Entries (last 7 days)</div><div class="v" id="kpiEntries">0</div></div>
-          <div class="kpi"><div class="muted">Average intensity before</div><div class="v" id="kpiAvgBefore">0.0</div></div>
-          <div class="kpi"><div class="muted">Average intensity after</div><div class="v" id="kpiAvgAfter">0.0</div></div>
-          <div class="kpi"><div class="muted">Average drop</div><div class="v" id="kpiDrop">0.0</div></div>
-          <div class="kpi"><div class="muted">Action completion rate</div><div class="v" id="kpiCompletion">0%</div></div>
-          <div class="kpi"><div class="muted"><span id="kpiMetricName">Primary outcome</span> (last 7 days)</div><div class="v" id="kpiMetricTotal">0</div></div>
-        </div>
+      <div style="margin-top: 12px;">
+        <div class="sub"><span id="metricChartTitle">Primary outcome per day</span> (last 7 days)</div>
+        <canvas id="metricCanvas" width="900" height="220"></canvas>
+      </div>
 
-        <div style="margin-top: 10px;">
-          <div class="actions">
-            <button class="linkbtn" id="exportBtn" type="button">Export JSON</button>
-            <button class="linkbtn" id="importBtn" type="button">Import JSON</button>
-            <input id="importFile" type="file" accept="application/json" style="display:none;" />
-            <button class="linkbtn" id="wipeBtn" type="button">Wipe local data</button>
-          </div>
-          <div class="note">Export regularly. GitHub Pages does not store your data. Your browser does.</div>
-        </div>
+      <div style="margin-top: 12px;">
+        <div class="sub">Distortion frequency (last 7 days)</div>
+        <canvas id="distCanvas" width="900" height="220"></canvas>
+      </div>
 
-        <div style="margin-top: 12px;">
-          <div class="muted">Intensity overlay (last 7 days) <span class="badge">Before solid, After light</span></div>
-          <canvas id="overlayCanvas" width="900" height="220"></canvas>
-        </div>
+      <div style="margin-top: 12px;">
+        <div class="sub">Recent entries</div>
+        <table aria-label="Recent entries table">
+          <thead>
+            <tr>
+              <th>Date</th><th>Area</th><th>Pattern</th><th>Emotion</th><th>Before</th><th>After</th><th>Action</th><th>Done</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="recentBody"></tbody>
+        </table>
+      </div>
 
-        <div style="margin-top: 12px;">
-          <div class="muted"><span id="metricChartTitle">Primary outcome per day</span> (last 7 days)</div>
-          <canvas id="metricCanvas" width="900" height="220"></canvas>
-        </div>
+      <div class="note" style="margin-top: 12px;">This tool supports reflection and action planning. It is not medical care.</div>
+    </section>
+  </div>
+</main>
 
-        <div style="margin-top: 12px;">
-          <div class="muted">Distortion frequency (last 7 days)</div>
-          <canvas id="distCanvas" width="900" height="220"></canvas>
-        </div>
-
-        <div style="margin-top: 12px;">
-          <div class="muted">Top distortions (last 7 days)</div>
-          <div id="topDistortions" class="note">None yet</div>
-        </div>
-
-        <div style="margin-top: 12px;">
-          <div class="muted">Weekly report</div>
-          <pre id="weeklyReport" class="note" style="white-space:pre-wrap;margin:0;">No data yet</pre>
-          <div class="actions" style="margin-top: 8px;">
-            <button class="linkbtn" id="copyReportBtn" type="button">Copy report</button>
-          </div>
-        </div>
-
-        <div style="margin-top: 12px;">
-          <div class="muted">Recent entries</div>
-          <table aria-label="Recent entries table">
-            <thead>
-              <tr>
-                <th>Date</th><th>Area</th><th>Pattern</th><th>Emotion</th><th>Before</th><th>After</th><th>Distortion</th><th>Action</th><th>Done</th><th></th>
-              </tr>
-            </thead>
-            <tbody id="recentBody"></tbody>
-          </table>
-        </div>
-
-        <div class="footer">This tool supports reflection and action planning. It is not medical care.</div>
-      </section>
+<dialog id="promptDialog">
+  <div style="padding: 14px; max-width: 680px;">
+    <div style="font-weight: 700; margin-bottom: 8px;">Quick prompts</div>
+    <div class="note" style="margin-top:0;">Use one prompt, then take one small action.</div>
+    <ul class="note">
+      <li>What is the fact, and what story am I adding?</li>
+      <li>What would I tell a friend who said this thought?</li>
+      <li>What is one small proof I can create in the next 2 hours?</li>
+      <li>What is the smallest next step that still counts?</li>
+      <li>What rule would I follow if I wanted less regret later?</li>
+    </ul>
+    <div class="actions" style="justify-content:flex-end;">
+      <button class="linkbtn" id="closeDialogBtn" type="button">Close</button>
     </div>
-  </main>
+  </div>
+</dialog>
 
-  <dialog id="promptDialog">
-    <div style="padding: 14px; max-width: 680px;">
-      <div style="font-weight: 700; margin-bottom: 8px;">Quick prompts</div>
-      <div class="note" style="margin-top:0;">Use one prompt, then take one small action.</div>
-      <ul class="note">
-        <li>What is the fact, and what story am I adding?</li>
-        <li>What would I tell a friend who said this thought?</li>
-        <li>What is one small proof I can create in the next 2 hours?</li>
-        <li>What rule would I follow if I wanted less regret later?</li>
-        <li>What is the smallest next step that still counts?</li>
-      </ul>
-      <div class="actions" style="justify-content:flex-end;">
-        <button class="linkbtn" id="closeDialogBtn" type="button">Close</button>
+<script>
+const LS_KEY = "universal_decision_control_v2_5";
+const SETTINGS_KEY = "universal_decision_control_settings_v2_5";
+
+const PATTERNS = {
+  "All-or-Nothing": { reframe: "Small progress still counts. I will do one small rep now.", action: "Do a 10-minute version now. Stop after 10 minutes.", distortion: "All-or-nothing" },
+  "Catastrophizing": { reframe: "This is a setback, not a collapse. I can stabilize with one step.", action: "Do one stabilizing action today, then reassess.", distortion: "Catastrophizing" },
+  "Mind Reading": { reframe: "I do not have proof of what others think. I will act on facts.", action: "Send one message or publish one post, then measure the response.", distortion: "Mind-reading" },
+  "Emotional Reasoning": { reframe: "My feelings are signals, not commands. I can act despite emotion.", action: "Do one action rep even if I feel unsure.", distortion: "Emotional reasoning" },
+  "Overgeneralizing": { reframe: "One event does not define the whole pattern. I can try again with a smaller step.", action: "Repeat one controlled rep and track the result.", distortion: "Overgeneralizing" },
+  "Avoidance Loop": { reframe: "Delay increases stress. Starting small reduces stress.", action: "Start for 5 minutes right now. Continue only if it feels manageable.", distortion: "Emotional reasoning" },
+  "Shame Loop": { reframe: "Shame does not help. A clean rep helps. I will do one clean rep now.", action: "Do one clean rep and mark it done. No extra judgement.", distortion: "Labeling" },
+  "Incremental Progress": { reframe: "Small steps compound. Today counts.", action: "Do the smallest version daily this week.", distortion: "Discounting the positive" },
+  "Evidence Based": { reframe: "I will use evidence, not assumptions. I will check one fact.", action: "Measure one input and make one adjustment.", distortion: "Fortune telling" },
+  "Identity Based": { reframe: "I act like the person I am becoming. I do one identity rep now.", action: "Execute one identity rep and capture proof.", distortion: "Other" },
+  "Exposure Rule": { reframe: "Growth requires discomfort. I will do a small safe exposure rep.", action: "Do one uncomfortable rep at a small safe level.", distortion: "Catastrophizing" },
+  "Data Over Drama": { reframe: "Numbers over narrative. I will track today and adjust.", action: "Track the primary metric today and do one rep to increase it.", distortion: "Emotional reasoning" },
+  "Long Game": { reframe: "This is one rep in a long series. I will keep the cadence.", action: "Do one rep today. Keep the streak alive.", distortion: "Overgeneralizing" },
+  "Recovery Rule": { reframe: "A reset within 24 hours protects momentum. I restart now.", action: "Restart now with the smallest version, then schedule the next rep.", distortion: "All-or-nothing" }
+};
+
+const el = id => document.getElementById(id);
+
+function pad(n){ return String(n).padStart(2, "0"); }
+function nowLocalDatetimeValue() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function todayDateValue() {
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+function parseDateSafe(val) {
+  const d = new Date(val);
+  return isNaN(d.getTime()) ? null : d;
+}
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+
+function buildPlainSummary(entry) {
+  const d = parseDateSafe(entry.date);
+  const dateStr = d ? d.toLocaleString() : (entry.date || "");
+  const before = Number(entry.intensityBefore || 0);
+  const after = Number(entry.intensityAfter || 0);
+  const drop = (before - after);
+  const lines = [
+    "Decision Breakdown",
+    "Date: " + dateStr,
+    "Area: " + (entry.contextTag || ""),
+    "You thought: " + (entry.thought || ""),
+    "You felt: " + (entry.emotion || "") + " (" + before + " -> " + after + ", drop " + drop.toFixed(1) + ")",
+    "You did: " + (entry.action || ""),
+    "Result: " + (entry.experiment || ""),
+    "Evidence: " + (entry.evidence || ""),
+    "Pattern: " + (entry.decisionPattern || ""),
+    "Distortion: " + (entry.distortion || ""),
+    "Reframe: " + (entry.reframe || ""),
+    "Deadline: " + (entry.deadline ? new Date(entry.deadline).toLocaleString() : ""),
+    "Scoreboard: " + (entry.metricName || "") + " = " + Number(entry.metricValue || 0),
+    "Identity: " + (entry.identity || "")
+  ];];
+  return lines.join("\n");
+}
+
+function copyTextFromSummary(entry) {
+  const txt = buildPlainSummary(entry);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(() => alert("Summary copied."), () => alert("Could not copy. Try selecting and copying manually."));
+  } else {
+    alert("Clipboard not available in this browser.");
+  }
+}
+
+function printSummary(entry) {
+  const txt = buildPlainSummary(entry);
+  const w = window.open("", "_blank");
+  if (!w) { alert("Popup blocked. Allow popups to print."); return; }
+  w.document.write("<pre style='font:14px system-ui;white-space:pre-wrap;'>" + escapeHtml(txt) + "</pre>");
+  w.document.close();
+  w.focus();
+  w.print();
+}
+
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    const s = raw ? JSON.parse(raw) : null;
+    return s && typeof s === "object" ? s : { metricPreset: "Conversations", metricCustom: "" };
+  } catch {
+    return { metricPreset: "Conversations", metricCustom: "" };
+  }
+}
+function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
+
+function metricNameFromUI() {
+  const preset = el("metricPreset").value;
+  const custom = (el("metricCustom").value || "").trim();
+  if (preset === "Other") return custom || "Custom metric";
+  return preset;
+}
+function syncMetricUI() {
+  const preset = el("metricPreset").value;
+  const isOther = preset === "Other";
+  el("metricCustom").disabled = !isOther;
+  el("metricCustom").style.opacity = isOther ? "1" : ".55";
+  const name = metricNameFromUI();
+  el("metricLabelInline").textContent = name;
+  el("kpiMetricName").textContent = name;
+  el("metricChartTitle").textContent = name + " per day";
+}
+
+function loadEntries() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch { return []; }
+}
+function saveEntries(entries) {
+  localStorage.setItem(LS_KEY, JSON.stringify(entries));
+}
+
+function selectedEmotion() {
+  const pick = el("emotionPick").value;
+  if (pick === "__OTHER__") return (el("emotionOther").value || "").trim();
+  return pick;
+}
+function syncEmotionOtherVisibility() {
+  const isOther = el("emotionPick").value === "__OTHER__";
+  el("emotionOther").style.display = isOther ? "block" : "none";
+  if (!isOther) el("emotionOther").value = "";
+}
+
+function setRequiredActionMode(on) {
+  el("actionReq").style.display = on ? "inline" : "none";
+  el("deadlineReq").style.display = on ? "inline" : "none";
+  el("action").classList.toggle("warn", on);
+  el("deadline").classList.toggle("warn", on);
+}
+
+function applyPattern(p) {
+  if (!p || !PATTERNS[p]) { el("patternHint").textContent = ""; return; }
+  const s = PATTERNS[p];
+  el("patternHint").textContent = "Suggested reframe and action were prefilled. You can edit them.";
+  if (!el("reframe").value.trim()) el("reframe").value = s.reframe;
+  if (!el("action").value.trim()) el("action").value = s.action;
+  if (el("distortion") && (!el("distortion").value || el("distortion").value === "Other")) el("distortion").value = s.distortion || "Other";
+}
+
+function validateBeforeSave() {
+  const trigger = el("trigger").value.trim();
+  const thought = el("thought").value.trim();
+  if (!trigger || !thought) { alert("Trigger and automatic thought are required."); return false; }
+  const emo = selectedEmotion();
+  if (!emo) { alert("Please select an emotion."); return false; }
+
+  const before = Number(el("intensityBefore").value || 0);
+  if (before >= 7) {
+    const action = el("action").value.trim();
+    const deadline = el("deadline").value.trim();
+    if (!action || !deadline) { alert("Intensity before is 7 or higher. Action and deadline are required."); return false; }
+  }
+  return true;
+}
+
+const state = { entries: [], editId: null };
+
+function buildDecisionBreakdown(entry) {
+  const before = Number(entry.intensityBefore || 0);
+  const after = Number(entry.intensityAfter || 0);
+  const drop = (before - after);
+
+  const metricName = entry.metricName || "Primary outcome";
+  const metricVal = Number(entry.metricValue || 0);
+
+  const pattern = entry.decisionPattern || "Not selected";
+  const emo = entry.emotion || "Not selected";
+  const distortion = entry.distortion || "Not selected";
+
+  const actionText = entry.action ? entry.action : "No action entered";
+  const deadlineText = entry.deadline ? new Date(entry.deadline).toLocaleString() : "No deadline entered";
+  const resultText = entry.experiment ? entry.experiment : "No result entered yet";
+  const evidenceText = entry.evidence ? entry.evidence : "No evidence entered yet";
+
+  const identity = entry.identity ? entry.identity : "No identity line entered";
+
+  
+
+return `
+    <h2>Decision Breakdown</h2>
+    <div class="summaryTools">
+      <button class="linkbtn" type="button" id="copySummaryBtn">Copy summary</button>
+      <button class="linkbtn" type="button" id="printSummaryBtn">Print</button>
+      <button class="linkbtn" type="button" id="copyActionBtn">Copy next action</button>
+    </div>
+
+    <div class="nextBox" style="margin-top:10px;">
+      <div class="t">At a glance</div>
+      <div class="summaryLine"><b>You thought:</b> ${escapeHtml(entry.thought || "")}</div>
+      <div class="summaryLine"><b>You felt:</b> ${escapeHtml(emo)} ${before} → ${after} (drop ${drop.toFixed(1)})</div>
+      <div class="summaryLine"><b>You did:</b> ${escapeHtml(entry.action ? entry.action : "No action entered")}</div>
+      <div class="summaryLine"><b>Result:</b> ${escapeHtml(entry.experiment ? entry.experiment : "No result entered yet")}</div>
+      <div class="summaryLine"><b>Identity:</b> ${escapeHtml(entry.identity ? entry.identity : "No identity line entered")}</div>
+      <div class="note">If intensity was 7 or higher, your action and deadline are required. That rule protects you from avoidance.</div>
+    </div>
+
+    <div class="bigResult">
+      <div class="bigCard">
+        <div class="t">Emotion shift</div>
+        <div class="v">${escapeHtml(emo)} ${before} → ${after}</div>
+        <div class="note">Drop: ${drop.toFixed(1)}</div>
+      </div>
+      <div class="bigCard">
+        <div class="t">Scoreboard</div>
+        <div class="v">${escapeHtml(metricName)}: ${metricVal}</div>
+        <div class="note">Last saved entry</div>
+      </div>
+      <div class="bigCard">
+        <div class="t">Next action plus deadline</div>
+        <div class="v">${escapeHtml(entry.action ? entry.action : "No action entered")}</div>
+        <div class="note">Deadline: ${escapeHtml(deadlineText)}</div>
       </div>
     </div>
-  </dialog>
 
-  <script>
-    const LS_KEY = "universal_decision_control_v2_2";
-    const SETTINGS_KEY = "universal_decision_control_settings_v2_2";
+    <div class="summaryLine"><b>1. Situation (facts)</b><br>${escapeHtml(entry.trigger || "")}</div>
+    <div class="summaryLine"><b>2. Pattern identified</b><br>${escapeHtml(pattern)}</div>
+    <div class="summaryLine"><b>3. Thinking error</b><br>${escapeHtml(distortion)}</div>
+    <div class="summaryLine"><b>4. Reframe</b><br>${escapeHtml(entry.reframe || "")}</div>
+    <div class="summaryLine"><b>5. Action and deadline</b><br>${escapeHtml(actionText)}<br><span class="note">Deadline: ${escapeHtml(deadlineText)}</span></div>
+    <div class="summaryLine"><b>6. Proof</b><br>${escapeHtml(evidenceText)}</div>
+  `;
+}
 
-    const OLD_KEYS = [
-      "universal_decision_control_v2_1",
-      "universal_v3",
-      "decision_control_entries_v1_3",
-      "decision_control_entries_v1_3_with_help",
-      "decision_control_entries_v1_5"
-    ];
+function upsertEntry() {
+  if (!validateBeforeSave()) return;
 
-    const PATTERNS = {
-      "All-or-Nothing": {
-        reframe: "Small progress still counts. I will do one small rep now.",
-        action: "Do a 10-minute version now. Stop after 10 minutes.",
-        distortion: "All-or-nothing"
-      },
-      "Catastrophizing": {
-        reframe: "This is a setback, not a collapse. I can stabilize with one step.",
-        action: "Do one stabilizing action today, then reassess.",
-        distortion: "Catastrophizing"
-      },
-      "Mind Reading": {
-        reframe: "I do not have proof of what others think. I will act on facts.",
-        action: "Send one message or publish one post, then measure the response.",
-        distortion: "Mind-reading"
-      },
-      "Emotional Reasoning": {
-        reframe: "My feelings are signals, not commands. I can act despite emotion.",
-        action: "Do one action rep even if I feel unsure.",
-        distortion: "Emotional reasoning"
-      },
-      "Overgeneralizing": {
-        reframe: "One event does not define the whole pattern. I can try again with a smaller step.",
-        action: "Repeat one controlled rep and track the result.",
-        distortion: "Overgeneralizing"
-      },
-      "Avoidance Loop": {
-        reframe: "Delay increases stress. Starting small reduces stress.",
-        action: "Start for 5 minutes right now. Continue only if it feels manageable.",
-        distortion: "Emotional reasoning"
-      },
-      "Shame Loop": {
-        reframe: "Shame does not help. A clean rep helps. I will do one clean rep now.",
-        action: "Do one clean rep and mark it done. No extra judgement.",
-        distortion: "Labeling"
-      },
-      "Incremental Progress": {
-        reframe: "Small steps compound. Today counts.",
-        action: "Do the smallest version daily this week.",
-        distortion: "Discounting the positive"
-      },
-      "Evidence Based": {
-        reframe: "I will use evidence, not assumptions. I will check one fact.",
-        action: "Measure one input and make one adjustment.",
-        distortion: "Fortune telling"
-      },
-      "Identity Based": {
-        reframe: "I act like the person I am becoming. I do one identity rep now.",
-        action: "Execute one identity rep and capture proof.",
-        distortion: "Other"
-      },
-      "Exposure Rule": {
-        reframe: "Growth requires discomfort. I will do a small safe exposure rep.",
-        action: "Do one uncomfortable rep at a small safe level.",
-        distortion: "Catastrophizing"
-      },
-      "Data Over Drama": {
-        reframe: "Numbers over narrative. I will track today and adjust.",
-        action: "Track the primary metric today and do one rep to increase it.",
-        distortion: "Emotional reasoning"
-      },
-      "Long Game": {
-        reframe: "This is one rep in a long series. I will keep the cadence.",
-        action: "Do one rep today. Keep the streak alive.",
-        distortion: "Overgeneralizing"
-      },
-      "Recovery Rule": {
-        reframe: "A reset within 24 hours protects momentum. I restart now.",
-        action: "Restart now with the smallest version, then schedule the next rep.",
-        distortion: "All-or-nothing"
+  const entry = {
+    id: state.editId || (Math.random().toString(16).slice(2) + Date.now().toString(16)),
+    date: el("entryDate").value || nowLocalDatetimeValue(),
+    contextTag: el("contextTag").value,
+    metricName: metricNameFromUI(),
+    decisionPattern: el("decisionPattern").value,
+    trigger: el("trigger").value.trim(),
+    thought: el("thought").value.trim(),
+    emotion: selectedEmotion(),
+    beliefBefore: Number(el("beliefBefore").value || 0),
+    beliefAfter: Number(el("beliefAfter").value || 0),
+    intensityBefore: Number(el("intensityBefore").value || 0),
+    intensityAfter: Number(el("intensityAfter").value || 0),
+    distortion: el("distortion") ? el("distortion").value : "Other",
+    resistance: el("resistance") ? el("resistance").value.trim() : "",
+    reframe: el("reframe").value.trim(),
+    action: el("action").value.trim(),
+    deadline: el("deadline").value || "",
+    experiment: el("experiment").value.trim(),
+    evidence: el("evidence").value.trim(),
+    metricValue: Number(el("metricValue").value || 0),
+    identity: el("identity").value.trim(),
+    notes: el("notes") ? el("notes").value.trim() : "",
+    completed: false,
+    updatedAt: new Date().toISOString()
+  };
+
+  const idx = state.entries.findIndex(e => e.id === entry.id);
+  if (idx >= 0) {
+    entry.completed = state.entries[idx].completed || false;
+    state.entries[idx] = entry;
+  } else {
+    state.entries.unshift(entry);
+  }
+  saveEntries(state.entries);
+
+  const box = el("postSaveSummary");
+  box.innerHTML = buildDecisionBreakdown(entry);
+  box.classList.remove("highlightPulse");
+  requestAnimationFrame(() => box.classList.add("highlightPulse"));
+  // iPhone Safari can shift the viewport with smooth scrolling. Use a stable jump.
+  box.scrollIntoView({ block: "start", behavior: "auto" });
+
+  // Wire summary tools
+  const copyBtn = document.getElementById("copySummaryBtn");
+  const printBtn = document.getElementById("printSummaryBtn");
+  const copyActionBtn = document.getElementById("copyActionBtn");
+  if (copyBtn) copyBtn.onclick = () => copyTextFromSummary(entry);
+  if (printBtn) printBtn.onclick = () => printSummary(entry);
+  if (copyActionBtn) copyActionBtn.onclick = () => navigator.clipboard.writeText(entry.action || "");
+
+  state.editId = null;
+  el("saveBtn").textContent = "Save entry";
+  clearForm(false);
+  refreshAll();
+}
+
+function clearForm(resetDate) {
+  if (resetDate) el("entryDate").value = nowLocalDatetimeValue();
+  el("contextTag").value = "Work";
+  el("decisionPattern").value = "";
+  el("patternHint").textContent = "";
+  el("trigger").value = "";
+  el("thought").value = "";
+  el("emotionPick").value = "";
+  el("emotionOther").value = "";
+  el("beliefBefore").value = 60;
+  el("beliefAfter").value = 40;
+  el("intensityBefore").value = 5;
+  el("intensityAfter").value = 3;
+  if (el("distortion")) el("distortion").value = "All-or-nothing";
+  if (el("resistance")) el("resistance").value = "";
+  el("reframe").value = "";
+  el("action").value = "";
+  el("deadline").value = "";
+  el("experiment").value = "";
+  el("evidence").value = "";
+  el("metricValue").value = 0;
+  el("identity").value = "";
+  if (el("notes")) el("notes").value = "";
+  syncEmotionOtherVisibility();
+  setRequiredActionMode(false);
+  syncMetricUI();
+}
+
+function toggleCompleted(id) {
+  const idx = state.entries.findIndex(e => e.id === id);
+  if (idx < 0) return;
+  state.entries[idx].completed = !state.entries[idx].completed;
+  state.entries[idx].updatedAt = new Date().toISOString();
+  saveEntries(state.entries);
+  refreshAll();
+}
+
+function loadIntoForm(id) {
+  const e = state.entries.find(x => x.id === id);
+  if (!e) return;
+  state.editId = id;
+  el("saveBtn").textContent = "Update entry";
+  el("entryDate").value = e.date || nowLocalDatetimeValue();
+  el("contextTag").value = e.contextTag || "Other";
+
+  const presetVals = Array.from(el("metricPreset").options).map(o => o.value || o.textContent);
+  if (presetVals.includes(e.metricName)) {
+    el("metricPreset").value = e.metricName;
+    el("metricCustom").value = "";
+  } else {
+    el("metricPreset").value = "Other";
+    el("metricCustom").value = e.metricName || "";
+  }
+  syncMetricUI();
+
+  el("decisionPattern").value = e.decisionPattern || "";
+  el("trigger").value = e.trigger || "";
+  el("thought").value = e.thought || "";
+
+  const emoVals = Array.from(el("emotionPick").options).map(o => o.value || o.textContent);
+  if (emoVals.includes(e.emotion)) {
+    el("emotionPick").value = e.emotion;
+    el("emotionOther").value = "";
+  } else {
+    el("emotionPick").value = "__OTHER__";
+    el("emotionOther").value = e.emotion || "";
+  }
+  syncEmotionOtherVisibility();
+
+  el("beliefBefore").value = e.beliefBefore ?? 0;
+  el("beliefAfter").value = e.beliefAfter ?? 0;
+  el("intensityBefore").value = e.intensityBefore ?? 0;
+  el("intensityAfter").value = e.intensityAfter ?? 0;
+  if (el("distortion")) el("distortion").value = e.distortion || "Other";
+  if (el("resistance")) el("resistance").value = e.resistance || "";
+  el("reframe").value = e.reframe || "";
+  el("action").value = e.action || "";
+  el("deadline").value = e.deadline || "";
+  el("experiment").value = e.experiment || "";
+  el("evidence").value = e.evidence || "";
+  el("metricValue").value = e.metricValue ?? 0;
+  el("identity").value = e.identity || "";
+  if (el("notes")) el("notes").value = e.notes || "";
+
+  setRequiredActionMode(Number(el("intensityBefore").value || 0) >= 7);
+  applyPattern(el("decisionPattern").value);
+  // iPhone Safari can shift the viewport with smooth scrolling. Use a stable jump.
+  box.scrollIntoView({ block: "start", behavior: "auto" });
+}
+
+function deleteEntry(id) {
+  if (!confirm("Delete this entry?")) return;
+  state.entries = state.entries.filter(e => e.id !== id);
+  saveEntries(state.entries);
+  refreshAll();
+}
+
+function exportJson() {
+  const blob = new Blob([JSON.stringify(state.entries, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "universal-decision-control-export.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+}
+
+function importJsonFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!Array.isArray(parsed)) throw new Error("Invalid JSON");
+      const merged = [...state.entries];
+      const existing = new Set(merged.map(e => e.id));
+      for (const raw of parsed) {
+        if (!raw || typeof raw !== "object") continue;
+        const e = { ...raw };
+        if (!e.id) e.id = Math.random().toString(16).slice(2) + Date.now().toString(16);
+        if (existing.has(e.id)) continue;
+        merged.push(e);
+        existing.add(e.id);
       }
-    };
-
-    const el = id => document.getElementById(id);
-
-    function pad(n){ return String(n).padStart(2, "0"); }
-
-    function nowLocalDatetimeValue() {
-      const d = new Date();
-      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
-
-    function todayDateValue() {
-      const d = new Date();
-      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-    }
-
-    function parseDateSafe(val) {
-      const d = new Date(val);
-      return isNaN(d.getTime()) ? null : d;
-    }
-
-    function escapeHtml(s) {
-      return String(s || "").replace(/[&<>"']/g, c => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-      }[c]));
-    }
-
-    function loadSettings() {
-      try {
-        const raw = localStorage.getItem(SETTINGS_KEY);
-        const s = raw ? JSON.parse(raw) : null;
-        return s && typeof s === "object" ? s : { metricPreset: "Conversations", metricCustom: "" };
-      } catch {
-        return { metricPreset: "Conversations", metricCustom: "" };
-      }
-    }
-
-    function saveSettings(s) {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
-    }
-
-    function metricNameFromUI() {
-      const preset = el("metricPreset").value;
-      const custom = (el("metricCustom").value || "").trim();
-      if (preset === "Other") return custom || "Custom metric";
-      return preset;
-    }
-
-    function syncMetricUI() {
-      const preset = el("metricPreset").value;
-      el("metricCustom").disabled = preset !== "Other";
-      el("metricCustom").style.opacity = preset === "Other" ? "1" : ".55";
-      const name = metricNameFromUI();
-      el("metricLabelInline").textContent = name;
-      el("kpiMetricName").textContent = name;
-      el("metricChartTitle").textContent = name + " per day";
-    }
-
-    function loadEntriesDirect(key) {
-      try {
-        const raw = localStorage.getItem(key);
-        const parsed = raw ? JSON.parse(raw) : [];
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
-      }
-    }
-
-    function normalizeImportedEntry(e) {
-      const metricValue = Number(e.metricValue ?? e.metric ?? e.conversations ?? 0);
-      const intensityBefore = Number(e.intensityBefore ?? e.before ?? 0);
-      const intensityAfter = Number(e.intensityAfter ?? e.after ?? 0);
-
-      return {
-        id: e.id || (Math.random().toString(16).slice(2) + Date.now().toString(16)),
-        date: e.date || new Date().toISOString(),
-        contextTag: e.contextTag || "Other",
-        metricName: e.metricName || e.metricLabel || metricNameFromUI(),
-        decisionPattern: e.decisionPattern || "",
-        trigger: e.trigger || "",
-        thought: e.thought || "",
-        emotion: e.emotion || "",
-        beliefBefore: Number(e.beliefBefore || 0),
-        beliefAfter: Number(e.beliefAfter || 0),
-        intensityBefore,
-        intensityAfter,
-        distortion: e.distortion || "Other",
-        resistance: e.resistance || "",
-        reframe: e.reframe || "",
-        action: e.action || "",
-        deadline: e.deadline || "",
-        completed: !!e.completed,
-        experiment: e.experiment || "",
-        evidence: e.evidence || "",
-        metricValue,
-        identity: e.identity || "",
-        notes: e.notes || e.result || "",
-        updatedAt: e.updatedAt || new Date().toISOString()
-      };
-    }
-
-    function migrateIfNeeded() {
-      const existing = loadEntriesDirect(LS_KEY);
-      if (existing.length) return;
-
-      for (const k of OLD_KEYS) {
-        const old = loadEntriesDirect(k);
-        if (!old.length) continue;
-        const migrated = old.map(normalizeImportedEntry);
-        localStorage.setItem(LS_KEY, JSON.stringify(migrated));
-        break;
-      }
-    }
-
-    function loadEntries() { return loadEntriesDirect(LS_KEY); }
-    function saveEntries(entries) { localStorage.setItem(LS_KEY, JSON.stringify(entries)); }
-
-    function uuid() { return Math.random().toString(16).slice(2) + Date.now().toString(16); }
-
-    function selectedEmotion() {
-      const pick = el("emotionPick").value;
-      if (pick === "__OTHER__") return (el("emotionOther").value || "").trim();
-      return pick;
-    }
-
-    function syncEmotionOtherVisibility() {
-      const isOther = el("emotionPick").value === "__OTHER__";
-      el("emotionOther").style.display = isOther ? "block" : "none";
-      if (!isOther) el("emotionOther").value = "";
-    }
-
-    function setRequiredActionMode(on) {
-      el("actionReq").style.display = on ? "inline" : "none";
-      el("deadlineReq").style.display = on ? "inline" : "none";
-      el("action").classList.toggle("warn", on);
-      el("deadline").classList.toggle("warn", on);
-    }
-
-    function updateThoughtHints() {
-      const t = (el("thought").value || "").toLowerCase();
-      const flags = [];
-      const hasAny = arr => arr.some(w => t.includes(w));
-      if (hasAny(["always","never","every time","nothing ever","no one ever"])) flags.push("Pattern flag: all-or-nothing or overgeneralizing");
-      if (hasAny(["everyone","nobody","people think","they think","they all"])) flags.push("Pattern flag: mind-reading or overgeneralizing");
-      if (hasAny(["should","must","have to"])) flags.push("Pattern flag: should-statements");
-      if (hasAny(["ruined","disaster","catastrophe","impossible"])) flags.push("Pattern flag: catastrophizing");
-      if (hasAny(["because i feel","i feel like it means"])) flags.push("Pattern flag: emotional reasoning");
-
-      if (flags.length) {
-        el("thoughtHints").style.display = "block";
-        el("hintText").textContent = flags.join(" | ");
-      } else {
-        el("thoughtHints").style.display = "none";
-        el("hintText").textContent = "";
-      }
-    }
-
-    function applyPattern(p) {
-      if (!p || !PATTERNS[p]) {
-        el("patternBox").style.display = "none";
-        el("patternSuggestion").textContent = "";
-        return;
-      }
-      const s = PATTERNS[p];
-      el("patternBox").style.display = "block";
-      el("patternSuggestion").textContent = "Reframe: " + s.reframe + "  Action rule: " + s.action;
-
-      if (!el("reframe").value.trim()) el("reframe").value = s.reframe;
-      if (!el("action").value.trim()) el("action").value = s.action;
-
-      if (el("distortion").value === "Other" || !el("distortion").value) {
-        el("distortion").value = s.distortion || "Other";
-      }
-    }
-
-    function validateBeforeSave() {
-      const trigger = el("trigger").value.trim();
-      const thought = el("thought").value.trim();
-      if (!trigger || !thought) { alert("Trigger and automatic thought are required."); return false; }
-      const emo = selectedEmotion();
-      if (!emo) { alert("Please select an emotion."); return false; }
-
-      const before = Number(el("intensityBefore").value || 0);
-      if (before >= 7) {
-        const action = el("action").value.trim();
-        const deadline = el("deadline").value.trim();
-        if (!action || !deadline) { alert("Intensity before is 7 or higher. Action and deadline are required."); return false; }
-      }
-      return true;
-    }
-
-    const state = { entries: [], editId: null };
-
-    function upsertEntry() {
-      if (!validateBeforeSave()) return;
-
-      const entry = {
-        id: state.editId || uuid(),
-        date: el("entryDate").value || nowLocalDatetimeValue(),
-        contextTag: el("contextTag").value,
-        metricName: metricNameFromUI(),
-        decisionPattern: el("decisionPattern").value,
-        trigger: el("trigger").value.trim(),
-        thought: el("thought").value.trim(),
-        emotion: selectedEmotion(),
-        beliefBefore: Number(el("beliefBefore").value || 0),
-        beliefAfter: Number(el("beliefAfter").value || 0),
-        intensityBefore: Number(el("intensityBefore").value || 0),
-        intensityAfter: Number(el("intensityAfter").value || 0),
-        distortion: el("distortion").value,
-        resistance: el("resistance").value.trim(),
-        reframe: el("reframe").value.trim(),
-        action: el("action").value.trim(),
-        deadline: el("deadline").value || "",
-        completed: false,
-        experiment: el("experiment").value.trim(),
-        evidence: el("evidence").value.trim(),
-        metricValue: Number(el("metricValue").value || 0),
-        identity: el("identity").value.trim(),
-        notes: el("notes").value.trim(),
-        updatedAt: new Date().toISOString()
-      };
-
-      const idx = state.entries.findIndex(e => e.id === entry.id);
-      if (idx >= 0) {
-        entry.completed = state.entries[idx].completed || false;
-        state.entries[idx] = entry;
-      } else {
-        state.entries.unshift(entry);
-      }
-
-      saveEntries(state.entries);
-      state.editId = null;
-      el("saveBtn").textContent = "Save entry";
-      clearForm(false);
-      refreshAll();
-      alert("Saved.");
-    }
-
-    function clearForm(resetDate) {
-      if (resetDate) el("entryDate").value = nowLocalDatetimeValue();
-      el("contextTag").value = "Work";
-      el("decisionPattern").value = "";
-      el("patternBox").style.display = "none";
-      el("patternSuggestion").textContent = "";
-      el("trigger").value = "";
-      el("thought").value = "";
-      el("emotionPick").value = "";
-      el("emotionOther").value = "";
-      el("beliefBefore").value = 60;
-      el("beliefAfter").value = 40;
-      el("intensityBefore").value = 5;
-      el("intensityAfter").value = 3;
-      el("distortion").value = "All-or-nothing";
-      el("resistance").value = "";
-      el("reframe").value = "";
-      el("action").value = "";
-      el("deadline").value = "";
-      el("experiment").value = "";
-      el("evidence").value = "";
-      el("metricValue").value = 0;
-      el("identity").value = "";
-      el("notes").value = "";
-      syncEmotionOtherVisibility();
-      setRequiredActionMode(false);
-      updateThoughtHints();
-      syncMetricUI();
-    }
-
-    function toggleCompleted(id) {
-      const idx = state.entries.findIndex(e => e.id === id);
-      if (idx < 0) return;
-      state.entries[idx].completed = !state.entries[idx].completed;
-      state.entries[idx].updatedAt = new Date().toISOString();
+      state.entries = merged.sort((a,b) => (parseDateSafe(b.date)?.getTime()||0) - (parseDateSafe(a.date)?.getTime()||0));
       saveEntries(state.entries);
       refreshAll();
+      alert("Import complete.");
+    } catch {
+      alert("Could not import. File must be a JSON export from this app.");
     }
+  };
+  reader.readAsText(file);
+}
 
-    function loadIntoForm(id) {
-      const e = state.entries.find(x => x.id === id);
-      if (!e) return;
+function wipeData() {
+  if (!confirm("Wipe all local data on this device?")) return;
+  localStorage.removeItem(LS_KEY);
+  state.entries = [];
+  state.editId = null;
+  clearForm(true);
+  refreshAll();
+}
 
-      state.editId = id;
-      el("saveBtn").textContent = "Update entry";
-      el("entryDate").value = e.date || nowLocalDatetimeValue();
-      el("contextTag").value = e.contextTag || "Other";
+function getLast7Days(entries, refDateStr) {
+  const ref = new Date(refDateStr + "T23:59:59");
+  const start = new Date(ref);
+  start.setDate(start.getDate() - 6);
+  start.setHours(0,0,0,0);
+  return entries.filter(e => {
+    const d = parseDateSafe(e.date);
+    if (!d) return false;
+    return d >= start && d <= ref;
+  });
+}
 
-      if (e.metricName) {
-        const presets = Array.from(el("metricPreset").options).map(o => o.value);
-        if (presets.includes(e.metricName)) {
-          el("metricPreset").value = e.metricName;
-          el("metricCustom").value = "";
-        } else {
-          el("metricPreset").value = "Other";
-          el("metricCustom").value = e.metricName;
-        }
-      }
-      syncMetricUI();
+function compute7DayBuckets(refDateStr) {
+  const ref = new Date(refDateStr + "T12:00:00");
+  const days = [];
+  for (let i=6;i>=0;i--) {
+    const d = new Date(ref);
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().slice(0,10));
+  }
+  return days;
+}
+function niceDayLabel(isoYYYYMMDD) { return isoYYYYMMDD.slice(5); }
 
-      el("decisionPattern").value = e.decisionPattern || "";
-      applyPattern(el("decisionPattern").value);
+function drawOverlay(last7, refDateStr) {
+  const canvas = el("overlayCanvas");
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
 
-      el("trigger").value = e.trigger || "";
-      el("thought").value = e.thought || "";
+  const padL = 52, padR = 18, padT = 14, padB = 30;
+  const days = compute7DayBuckets(refDateStr);
 
-      const optionTexts = Array.from(el("emotionPick").options).map(o => o.value || o.textContent);
-      if (optionTexts.includes(e.emotion)) {
-        el("emotionPick").value = e.emotion;
-        el("emotionOther").value = "";
-      } else {
-        el("emotionPick").value = "__OTHER__";
-        el("emotionOther").value = e.emotion || "";
-      }
-      syncEmotionOtherVisibility();
+  ctx.globalAlpha = 0.16;
+  for (let i=0;i<=10;i++){
+    const y = padT + (h - padT - padB) * (i/10);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
 
-      el("beliefBefore").value = e.beliefBefore ?? 0;
-      el("beliefAfter").value = e.beliefAfter ?? 0;
-      el("intensityBefore").value = e.intensityBefore ?? 0;
-      el("intensityAfter").value = e.intensityAfter ?? 0;
-      el("distortion").value = e.distortion || "Other";
-      el("resistance").value = e.resistance || "";
-      el("reframe").value = e.reframe || "";
-      el("action").value = e.action || "";
-      el("deadline").value = e.deadline || "";
-      el("experiment").value = e.experiment || "";
-      el("evidence").value = e.evidence || "";
-      el("metricValue").value = e.metricValue ?? 0;
-      el("identity").value = e.identity || "";
-      el("notes").value = e.notes || "";
+  ctx.font = "14px system-ui";
+  ctx.globalAlpha = 0.85;
+  ctx.fillText("10", 14, padT+10);
+  ctx.fillText("0", 22, h - padB + 6);
+  ctx.globalAlpha = 1;
 
-      setRequiredActionMode(Number(el("intensityBefore").value || 0) >= 7);
-      updateThoughtHints();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+  const before = [], after = [];
+  for (const day of days) {
+    const entries = last7.filter(e => {
+      const d = parseDateSafe(e.date);
+      if (!d) return false;
+      return d.toISOString().slice(0,10) === day;
+    });
+    if (!entries.length) { before.push(null); after.push(null); continue; }
+    before.push(entries.reduce((s,e)=>s+Number(e.intensityBefore||0),0)/entries.length);
+    after.push(entries.reduce((s,e)=>s+Number(e.intensityAfter||0),0)/entries.length);
+  }
+
+  ctx.globalAlpha = 0.8;
+  for (let i=0;i<7;i++) {
+    const x = padL + (w - padL - padR) * (i / 6);
+    ctx.fillText(niceDayLabel(days[i]), x - 14, h - 10);
+  }
+  ctx.globalAlpha = 1;
+
+  function drawLine(series, alpha) {
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    let started = false;
+    for (let i=0;i<7;i++) {
+      const v = series[i];
+      if (v === null || v === undefined) { started = false; continue; }
+      const x = padL + (w - padL - padR) * (i / 6);
+      const y = padT + (h - padT - padB) * (1 - (v / 10));
+      if (!started) { ctx.moveTo(x,y); started = true; } else ctx.lineTo(x,y);
     }
-
-    function deleteEntry(id) {
-      if (!confirm("Delete this entry?")) return;
-      state.entries = state.entries.filter(e => e.id !== id);
-      saveEntries(state.entries);
-      refreshAll();
+    ctx.stroke();
+    for (let i=0;i<7;i++) {
+      const v = series[i];
+      if (v === null || v === undefined) continue;
+      const x = padL + (w - padL - padR) * (i / 6);
+      const y = padT + (h - padT - padB) * (1 - (v / 10));
+      ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill();
     }
+    ctx.globalAlpha = 1;
+  }
 
-    function exportJson() {
-      const blob = new Blob([JSON.stringify(state.entries, null, 2)], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "universal-decision-control-export.json";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(a.href);
+  drawLine(before, 1);
+  drawLine(after, 0.35);
+}
+
+function drawMetric(last7, refDateStr) {
+  const canvas = el("metricCanvas");
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  const padL = 52, padR = 18, padT = 14, padB = 30;
+  const days = compute7DayBuckets(refDateStr);
+
+  const totals = days.map(day => {
+    const entries = last7.filter(e => {
+      const d = parseDateSafe(e.date);
+      if (!d) return false;
+      return d.toISOString().slice(0,10) === day;
+    });
+    return entries.reduce((s,e)=>s+Number(e.metricValue||0),0);
+  });
+
+  const maxV = Math.max(1, ...totals);
+
+  ctx.globalAlpha = 0.16;
+  for (let i=0;i<=4;i++){
+    const y = padT + (h - padT - padB) * (i/4);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  ctx.font = "14px system-ui";
+  ctx.globalAlpha = 0.85;
+  ctx.fillText(String(maxV), 10, padT+10);
+  ctx.fillText("0", 22, h - padB + 6);
+  ctx.globalAlpha = 1;
+
+  const plotW = (w - padL - padR);
+  const step = plotW / 7;
+  const barW = Math.max(12, Math.min(26, step * 0.55));
+  for (let i=0;i<7;i++) {
+    const x = padL + step * i + (step - barW)/2;
+    const v = totals[i];
+    const barH = (h - padT - padB) * (v / maxV);
+    ctx.fillRect(x, h - padB - barH, barW, barH);
+    ctx.globalAlpha = 0.8;
+    ctx.fillText(niceDayLabel(days[i]), x - 6, h - 10);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawDistortions(last7) {
+  const canvas = el("distCanvas");
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  const padL = 12, padR = 12, padT = 14, padB = 36;
+
+  const counts = {};
+  for (const e of last7) {
+    const k = (e.distortion || "Unknown").toString();
+    counts[k] = (counts[k] || 0) + 1;
+  }
+  const pairs = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  if (!pairs.length) {
+    ctx.globalAlpha = 0.85;
+    ctx.font = "14px system-ui";
+    ctx.fillText("No data yet", padL + 12, padT + 18);
+    ctx.globalAlpha = 1;
+    return;
+  }
+  const maxV = Math.max(1, ...pairs.map(p=>p[1]));
+
+  ctx.globalAlpha = 0.16;
+  for (let i=0;i<=4;i++){
+    const y = padT + (h - padT - padB) * (i/4);
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  const plotW = (w - padL - padR);
+  const step = plotW / pairs.length;
+  const barW = Math.max(18, Math.min(40, step * 0.55));
+
+  ctx.font = "12px system-ui";
+  for (let i=0;i<pairs.length;i++) {
+    const [name, count] = pairs[i];
+    const x = padL + step * i + (step - barW)/2;
+    const barH = (h - padT - padB) * (count / maxV);
+    ctx.fillRect(x, h - padB - barH, barW, barH);
+
+    const short = name.length > 14 ? name.slice(0, 12) + "…" : name;
+    ctx.globalAlpha = 0.85;
+    ctx.fillText(short, x - 6, h - 16);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function refreshDashboard() {
+  const ref = el("refDate").value || todayDateValue();
+  const last7 = getLast7Days(state.entries, ref);
+
+  const n = last7.length;
+  el("kpiEntries").textContent = String(n);
+
+  const avgBefore = n ? (last7.reduce((s,e)=>s + Number(e.intensityBefore||0),0) / n) : 0;
+  const avgAfter  = n ? (last7.reduce((s,e)=>s + Number(e.intensityAfter||0),0) / n) : 0;
+  el("kpiAvgBefore").textContent = avgBefore.toFixed(1);
+  el("kpiAvgAfter").textContent = avgAfter.toFixed(1);
+  el("kpiDrop").textContent = (avgBefore - avgAfter).toFixed(1);
+
+  const completed = last7.filter(e => e.completed).length;
+  const rate = n ? Math.round((completed / n) * 100) : 0;
+  el("kpiCompletion").textContent = rate + "%";
+
+  const metricTotal = last7.reduce((s,e)=>s + Number(e.metricValue||0),0);
+  el("kpiMetricTotal").textContent = String(metricTotal);
+
+  drawOverlay(last7, ref);
+  drawMetric(last7, ref);
+  drawDistortions(last7);
+
+  const body = el("recentBody");
+  body.innerHTML = "";
+  const recent = state.entries.slice(0, 12);
+  for (const e of recent) {
+    const d = parseDateSafe(e.date);
+    const dateStr = d ? d.toLocaleString() : "Unknown";
+    const done = e.completed ? "Yes" : "No";
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(dateStr)}</td>
+      <td>${escapeHtml(e.contextTag || "")}</td>
+      <td>${escapeHtml(e.decisionPattern || "")}</td>
+      <td>${escapeHtml(e.emotion || "")}</td>
+      <td>${escapeHtml(Number(e.intensityBefore||0))}</td>
+      <td>${escapeHtml(Number(e.intensityAfter||0))}</td>
+      <td>${escapeHtml((e.action || "").slice(0, 48))}${(e.action||"").length>48 ? "…" : ""}</td>
+      <td>${escapeHtml(done)}</td>
+      <td>
+        <div class="actions">
+          <button class="linkbtn" type="button" data-act="toggle" data-id="${escapeHtml(e.id)}">${e.completed ? "Mark not done" : "Mark done"}</button>
+          <button class="linkbtn" type="button" data-act="edit" data-id="${escapeHtml(e.id)}">Edit</button>
+          <button class="linkbtn" type="button" data-act="del" data-id="${escapeHtml(e.id)}">Delete</button>
+        </div>
+      </td>
+    `;
+    body.appendChild(tr);
+  }
+}
+
+function refreshAll() {
+  state.entries = loadEntries().sort((a,b) => (parseDateSafe(b.date)?.getTime()||0) - (parseDateSafe(a.date)?.getTime()||0));
+  refreshDashboard();
+  const stored = localStorage.getItem(LS_KEY);
+  el("storagePill").textContent = stored ? "Storage: local (saved)" : "Storage: local (empty)";
+}
+
+function init() {
+  const settings = loadSettings();
+  el("metricPreset").value = settings.metricPreset || "Conversations";
+  el("metricCustom").value = settings.metricCustom || "";
+  syncMetricUI();
+
+  el("entryDate").value = nowLocalDatetimeValue();
+  el("refDate").value = todayDateValue();
+  syncEmotionOtherVisibility();
+  setRequiredActionMode(Number(el("intensityBefore").value || 0) >= 7);
+
+  el("saveBtn").addEventListener("click", upsertEntry);
+  el("clearBtn").addEventListener("click", () => { state.editId = null; el("saveBtn").textContent = "Save entry"; clearForm(true); });
+  el("exportBtn").addEventListener("click", exportJson);
+  el("importBtn").addEventListener("click", () => el("importFile").click());
+  el("importFile").addEventListener("change", (ev) => {
+    const file = ev.target.files && ev.target.files[0];
+    if (file) importJsonFromFile(file);
+    ev.target.value = "";
+  });
+  el("wipeBtn").addEventListener("click", wipeData);
+
+  el("refDate").addEventListener("change", refreshDashboard);
+  el("intensityBefore").addEventListener("input", () => setRequiredActionMode(Number(el("intensityBefore").value || 0) >= 7));
+  el("emotionPick").addEventListener("change", syncEmotionOtherVisibility);
+
+  el("metricPreset").addEventListener("change", () => {
+    syncMetricUI();
+    saveSettings({ metricPreset: el("metricPreset").value, metricCustom: el("metricCustom").value });
+    refreshDashboard();
+  });
+  el("metricCustom").addEventListener("input", () => {
+    syncMetricUI();
+    saveSettings({ metricPreset: el("metricPreset").value, metricCustom: el("metricCustom").value });
+    refreshDashboard();
+  });
+
+  el("decisionPattern").addEventListener("change", () => applyPattern(el("decisionPattern").value));
+
+  el("quickBtn").addEventListener("click", () => el("promptDialog").showModal());
+  el("closeDialogBtn").addEventListener("click", () => el("promptDialog").close());
+
+  el("recentBody").addEventListener("click", (ev) => {
+    const btn = ev.target.closest("button");
+    if (!btn) return;
+    const act = btn.getAttribute("data-act");
+    const id = btn.getAttribute("data-id");
+    if (!id) return;
+    if (act === "toggle") toggleCompleted(id);
+    if (act === "edit") loadIntoForm(id);
+    if (act === "del") deleteEntry(id);
+  });
+
+  state.entries = loadEntries();
+  refreshAll();
+  const box = el("postSaveSummary");
+  box.innerHTML = `
+    <h2>Decision Breakdown</h2>
+    <div class="note">Save an entry and your summary will show here. It will stay here so you can read it easily.</div>
+    <div class="note">Tip: If you want a clean record, export once a week.</div>
+  `;
+}
+
+
+const TOUR_KEY = "udcs_tour_completed_v1";
+
+const TOUR_STEPS = [
+  {
+    id: "tour-intro",
+    title: "Welcome",
+    body: "Do this: Follow the highlight. Fill the box. Tap Next.
+Avoid this: Skipping steps.
+Why: The summary only makes sense after 1 to 7 is complete."
+  },
+  {
+    id: "tour-step-1",
+    title: "Step 1: Pattern",
+    body: "Do this: Pick the closest pattern. If unsure, pick Avoidance Loop.
+Avoid this: Searching for the perfect label.
+Why: Pattern selection reduces thinking and starts movement."
+  },
+  {
+    id: "tour-step-2",
+    title: "Step 2: Trigger (facts)",
+    body: "Do this: Write facts only. Time. Place. What you did.
+Avoid this: Words like ignored, disrespect, failure.
+Why: Facts stop your brain from exaggerating."
+  },
+  {
+    id: "tour-step-3",
+    title: "Step 3: Automatic thought",
+    body: "Do this: Write the first sentence your brain said.
+Avoid this: Making it polite or smart.
+Why: You can only fix the thought you capture."
+  },
+  {
+    id: "tour-step-4",
+    title: "Step 4: Emotion and intensity",
+    body: "Do this: Pick the emotion. Rate intensity before and after.
+Avoid this: Guessing what you should feel.
+Why: If before is 7+, the app forces action and deadline."
+  },
+  {
+    id: "tour-step-5",
+    title: "Step 5: Reframe",
+    body: "Do this: Write one calm correction or a simple rule.
+Avoid this: Motivation speeches.
+Why: A clean reframe makes the next action possible."
+  },
+  {
+    id: "tour-step-6",
+    title: "Step 6: Action and deadline",
+    body: "Do this: Choose one small action you can finish today. Set a real time.
+Avoid this: Vague actions like try harder.
+Why: Behavior rewires belief."
+  },
+  {
+    id: "tour-step-7",
+    title: "Step 7: Result and evidence",
+    body: "Do this: After you act, write what happened and add proof.
+Avoid this: Leaving it blank.
+Why: Proof is what teaches your brain."
+  },
+  {
+    id: "tour-actions",
+    title: "Save",
+    body: "Do this: Tap Save.
+Then read the top summary: You thought. You felt. You did.
+Next: Do the action before the deadline, then update Result and Evidence."
+  }
+];
+
+const tour = {
+  index: 0,
+  active: false
+};
+
+function isTourCompleted() {
+  try { return localStorage.getItem(TOUR_KEY) === "1"; } catch { return false; }
+}
+function setTourCompleted() {
+  try { localStorage.setItem(TOUR_KEY, "1"); } catch {}
+}
+function clearTourCompleted() {
+  try { localStorage.removeItem(TOUR_KEY); } catch {}
+}
+
+function getStepEl(step) {
+  return document.getElementById(step.id);
+}
+
+function openTour(startIndex=0) {
+  tour.index = startIndex;
+  tour.active = true;
+  const ov = el("tourOverlay");
+  ov.classList.add("active");
+  ov.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  renderTour();
+}
+
+function closeTour(markCompleted=false) {
+  tour.active = false;
+  const ov = el("tourOverlay");
+  ov.classList.remove("active");
+  ov.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+  if (markCompleted) setTourCompleted();
+}
+
+function placeCardNear(rect) {
+  const card = el("tourCard");
+  const margin = 12;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  // Measure card (force layout once)
+  card.style.left = "0px";
+  card.style.top = "0px";
+  const cw = card.offsetWidth;
+  const ch = card.offsetHeight;
+
+  // Prefer below highlight, else above, else centered
+  let left = Math.min(vw - cw - margin, Math.max(margin, rect.left));
+  let top = rect.bottom + margin;
+
+  if (top + ch + margin > vh) {
+    top = rect.top - ch - margin;
+  }
+  if (top < margin) {
+    top = Math.max(margin, (vh - ch) / 2);
+    left = Math.max(margin, (vw - cw) / 2);
+  }
+  card.style.left = left + "px";
+  card.style.top = top + "px";
+}
+
+function renderTour() {
+  if (!tour.active) return;
+
+  const step = TOUR_STEPS[tour.index];
+  const target = getStepEl(step);
+  const hole = el("tourHole");
+  const title = el("tourTitle");
+  const body = el("tourBody");
+
+  // Remove previous highlight classes
+  document.querySelectorAll(".tourHighlight").forEach(x => x.classList.remove("tourHighlight"));
+
+  title.innerHTML = escapeHtml(step.title) + ` <span class="tourBadge">${tour.index+1}/${TOUR_STEPS.length}</span>`;
+  // Render with line breaks for iPhone readability
+  body.innerHTML = escapeHtml(step.body).replace(/\n/g, '<br>');
+
+  const rect = target ? target.getBoundingClientRect() : null;
+
+  if (rect) {
+    target.classList.add("tourHighlight");
+
+    const pad = 8;
+    const x = Math.max(8, rect.left - pad);
+    const y = Math.max(8, rect.top - pad);
+    const w = Math.min(window.innerWidth - 16, rect.width + pad*2);
+    const h = Math.min(window.innerHeight - 16, rect.height + pad*2);
+
+    hole.style.left = x + "px";
+    hole.style.top = y + "px";
+    hole.style.width = w + "px";
+    hole.style.height = h + "px";
+
+    placeCardNear({ left: x, top: y, right: x+w, bottom: y+h });
+  } else {
+    hole.style.left = "12px";
+    hole.style.top = "12px";
+    hole.style.width = (window.innerWidth - 24) + "px";
+    hole.style.height = "120px";
+    placeCardNear({ left: 12, top: 12, right: window.innerWidth-12, bottom: 132 });
+  }
+
+  el("tourBackBtn").disabled = tour.index === 0;
+  el("tourNextBtn").textContent = tour.index === TOUR_STEPS.length - 1 ? "Finish" : "Next";
+}
+
+function nextTour() {
+  if (tour.index >= TOUR_STEPS.length - 1) {
+    closeTour(true);
+    return;
+  }
+  tour.index += 1;
+  renderTour();
+}
+function backTour() {
+  if (tour.index <= 0) return;
+  tour.index -= 1;
+  renderTour();
+}
+
+function wireTour() {
+  const startBtn = el("startTourBtn");
+  if (startBtn) {
+    startBtn.addEventListener("click", () => { clearTourCompleted(); openTour(0); });
+    startBtn.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); clearTourCompleted(); openTour(0); } });
+  }
+
+  el("tourNextBtn").addEventListener("click", nextTour);
+  el("tourBackBtn").addEventListener("click", backTour);
+  el("tourSkipBtn").addEventListener("click", () => closeTour(true));
+
+  // Click outside card closes
+  el("tourOverlay").addEventListener("click", (e) => {
+    const card = el("tourCard");
+    if (!card.contains(e.target)) {
+      closeTour(true);
     }
+  });
+
+  window.addEventListener("resize", () => { if (tour.active) renderTour(); });
+}
+
+
+init();
+window.addEventListener('DOMContentLoaded', () => {
+  wireTour();
+  if (!isTourCompleted()) { openTour(0); }
+});
+
+</script>
+
+<div id="tourOverlay" class="tourOverlay" aria-hidden="true">
+  <div id="tourHole" class="tourHole"></div>
+  <div id="tourCard" class="tourCard" role="dialog" aria-modal="true" aria-label="Guided instructions">
+    <div class="t" id="tourTitle">Guide</div>
+    <div class="b" id="tourBody"></div>
+    <div class="controls">
+      <button class="linkbtn" type="button" id="tourBackBtn">Back</button>
+      <button class="linkbtn" type="button" id="tourNextBtn">Next</button>
+      <button class="linkbtn" type="button" id="tourSkipBtn">Skip</button>
+    </div>
+  </div>
+</div>
 
-    function importJsonFromFile(file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const parsed = JSON.parse(reader.result);
-          if (!Array.isArray(parsed)) throw new Error("Invalid JSON");
-          const merged = [...state.entries];
-          const existingIds = new Set(merged.map(e => e.id));
-
-          for (const raw of parsed) {
-            if (!raw || typeof raw !== "object") continue;
-            const e = normalizeImportedEntry(raw);
-            if (existingIds.has(e.id)) continue;
-            merged.push(e);
-            existingIds.add(e.id);
-          }
-
-          state.entries = merged.sort((a,b) => (parseDateSafe(b.date)?.getTime()||0) - (parseDateSafe(a.date)?.getTime()||0));
-          saveEntries(state.entries);
-          refreshAll();
-          alert("Import complete.");
-        } catch {
-          alert("Could not import. File must be a JSON export from this app.");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function wipeData() {
-      if (!confirm("Wipe all local data on this device?")) return;
-      localStorage.removeItem(LS_KEY);
-      state.entries = [];
-      state.editId = null;
-      clearForm(true);
-      refreshAll();
-    }
-
-    function getLast7Days(entries, refDateStr) {
-      const ref = new Date(refDateStr + "T23:59:59");
-      const start = new Date(ref);
-      start.setDate(start.getDate() - 6);
-      start.setHours(0,0,0,0);
-      return entries.filter(e => {
-        const d = parseDateSafe(e.date);
-        if (!d) return false;
-        return d >= start && d <= ref;
-      });
-    }
-
-    function computeTopDistortions(list) {
-      const counts = {};
-      for (const e of list) {
-        const key = e.distortion || "Unknown";
-        counts[key] = (counts[key] || 0) + 1;
-      }
-      const pairs = Object.entries(counts).sort((a,b) => b[1]-a[1]);
-      if (!pairs.length) return "None yet";
-      return pairs.slice(0, 5).map(([k,v]) => `${k}: ${v}`).join(" | ");
-    }
-
-    function makeWeeklyReport(last7, metricName) {
-      if (!last7.length) return "No data yet";
-
-      const n = last7.length;
-      const avgBefore = last7.reduce((s,e)=>s + Number(e.intensityBefore||0),0) / n;
-      const avgAfter  = last7.reduce((s,e)=>s + Number(e.intensityAfter||0),0) / n;
-      const drop = avgBefore - avgAfter;
-
-      const completed = last7.filter(e => e.completed).length;
-      const rate = Math.round((completed / n) * 100);
-
-      const metricTotal = last7.reduce((s,e)=>s + Number(e.metricValue||0),0);
-
-      const dCounts = {};
-      for (const e of last7) dCounts[e.distortion||"Unknown"] = (dCounts[e.distortion||"Unknown"]||0)+1;
-      const topDist = Object.entries(dCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || "Unknown";
-
-      const pCounts = {};
-      for (const e of last7) {
-        if (!e.decisionPattern) continue;
-        pCounts[e.decisionPattern] = (pCounts[e.decisionPattern]||0)+1;
-      }
-      const topPattern = Object.entries(pCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || "None";
-
-      const actionGap = rate < 70 ? "Tighten the action so it takes 10 minutes or less. Then do it daily." : "Keep the same rule and maintain cadence.";
-      const intensityMove = drop < 1 ? "Make the reframe one calm sentence and include one fact that supports it." : "Your reframes are working. Keep measuring the drop.";
-      const metricMove = metricTotal === 0 ? `Make ${metricName} the default action when intensity is high.` : `Repeat the actions that increased ${metricName}.`;
-
-      return [
-        `Entries: ${n}`,
-        `Avg intensity before: ${avgBefore.toFixed(1)}`,
-        `Avg intensity after: ${avgAfter.toFixed(1)}`,
-        `Avg drop: ${drop.toFixed(1)}`,
-        `Action completion: ${rate}%`,
-        `${metricName}: ${metricTotal}`,
-        `Top distortion: ${topDist}`,
-        `Top decision pattern: ${topPattern}`,
-        `Next rule tweak: ${actionGap}`,
-        `Next focus: ${intensityMove}`,
-        `Outcome focus: ${metricMove}`
-      ].join("\n");
-    }
-
-    function compute7DayBuckets(refDateStr) {
-      const ref = new Date(refDateStr + "T12:00:00");
-      const days = [];
-      for (let i=6;i>=0;i--) {
-        const d = new Date(ref);
-        d.setDate(d.getDate() - i);
-        days.push(d.toISOString().slice(0,10));
-      }
-      return days;
-    }
-
-    function niceDayLabel(isoYYYYMMDD) { return isoYYYYMMDD.slice(5); }
-
-    function drawOverlay(last7, refDateStr) {
-      const canvas = el("overlayCanvas");
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width, h = canvas.height;
-      ctx.clearRect(0,0,w,h);
-
-      const padL = 52, padR = 18, padT = 14, padB = 30;
-      const days = compute7DayBuckets(refDateStr);
-
-      ctx.globalAlpha = 0.16;
-      for (let i=0;i<=10;i++){
-        const y = padT + (h - padT - padB) * (i/10);
-        ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
-      }
-      ctx.globalAlpha = 1;
-
-      ctx.font = "14px system-ui";
-      ctx.globalAlpha = 0.85;
-      ctx.fillText("10", 14, padT+10);
-      ctx.fillText("0", 22, h - padB + 6);
-      ctx.globalAlpha = 1;
-
-      const before = [], after = [];
-      for (const day of days) {
-        const entries = last7.filter(e => {
-          const d = parseDateSafe(e.date);
-          if (!d) return false;
-          return d.toISOString().slice(0,10) === day;
-        });
-        if (!entries.length) { before.push(null); after.push(null); continue; }
-        before.push(entries.reduce((s,e)=>s+Number(e.intensityBefore||0),0)/entries.length);
-        after.push(entries.reduce((s,e)=>s+Number(e.intensityAfter||0),0)/entries.length);
-      }
-
-      ctx.globalAlpha = 0.8;
-      for (let i=0;i<7;i++) {
-        const x = padL + (w - padL - padR) * (i / 6);
-        ctx.fillText(niceDayLabel(days[i]), x - 14, h - 10);
-      }
-      ctx.globalAlpha = 1;
-
-      function drawLine(series, alpha) {
-        ctx.globalAlpha = alpha;
-        ctx.beginPath();
-        let started = false;
-        for (let i=0;i<7;i++) {
-          const v = series[i];
-          if (v === null || v === undefined) { started = false; continue; }
-          const x = padL + (w - padL - padR) * (i / 6);
-          const y = padT + (h - padT - padB) * (1 - (v / 10));
-          if (!started) { ctx.moveTo(x,y); started = true; } else ctx.lineTo(x,y);
-        }
-        ctx.stroke();
-        for (let i=0;i<7;i++) {
-          const v = series[i];
-          if (v === null || v === undefined) continue;
-          const x = padL + (w - padL - padR) * (i / 6);
-          const y = padT + (h - padT - padB) * (1 - (v / 10));
-          ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill();
-        }
-        ctx.globalAlpha = 1;
-      }
-
-      drawLine(before, 1);
-      drawLine(after, 0.35);
-
-      ctx.globalAlpha = 0.85;
-      ctx.fillText("Before (solid) and After (light)", padL, padT + 18);
-      ctx.globalAlpha = 1;
-    }
-
-    function drawMetric(last7, refDateStr) {
-      const canvas = el("metricCanvas");
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width, h = canvas.height;
-      ctx.clearRect(0,0,w,h);
-
-      const padL = 52, padR = 18, padT = 14, padB = 30;
-      const days = compute7DayBuckets(refDateStr);
-
-      const totals = days.map(day => {
-        const entries = last7.filter(e => {
-          const d = parseDateSafe(e.date);
-          if (!d) return false;
-          return d.toISOString().slice(0,10) === day;
-        });
-        return entries.reduce((s,e)=>s+Number(e.metricValue||0),0);
-      });
-
-      const maxV = Math.max(1, ...totals);
-
-      ctx.globalAlpha = 0.16;
-      for (let i=0;i<=4;i++){
-        const y = padT + (h - padT - padB) * (i/4);
-        ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
-      }
-      ctx.globalAlpha = 1;
-
-      ctx.font = "14px system-ui";
-      ctx.globalAlpha = 0.85;
-      ctx.fillText(String(maxV), 10, padT+10);
-      ctx.fillText("0", 22, h - padB + 6);
-      ctx.globalAlpha = 1;
-
-      const plotW = (w - padL - padR);
-      const step = plotW / 7;
-      const barW = Math.max(12, Math.min(26, step * 0.55));
-      for (let i=0;i<7;i++) {
-        const x = padL + step * i + (step - barW)/2;
-        const v = totals[i];
-        const barH = (h - padT - padB) * (v / maxV);
-        ctx.fillRect(x, h - padB - barH, barW, barH);
-        ctx.globalAlpha = 0.8;
-        ctx.fillText(niceDayLabel(days[i]), x - 6, h - 10);
-        ctx.globalAlpha = 1;
-      }
-    }
-
-    function drawDistortions(last7) {
-      const canvas = el("distCanvas");
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width, h = canvas.height;
-      ctx.clearRect(0,0,w,h);
-
-      const padL = 12, padR = 12, padT = 14, padB = 36;
-
-      const counts = {};
-      for (const e of last7) {
-        const k = (e.distortion || "Unknown").toString();
-        counts[k] = (counts[k] || 0) + 1;
-      }
-
-      const pairs = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,7);
-      if (!pairs.length) {
-        ctx.globalAlpha = 0.85;
-        ctx.font = "14px system-ui";
-        ctx.fillText("No data yet", padL + 12, padT + 18);
-        ctx.globalAlpha = 1;
-        return;
-      }
-
-      const maxV = Math.max(1, ...pairs.map(p=>p[1]));
-
-      ctx.globalAlpha = 0.16;
-      for (let i=0;i<=4;i++){
-        const y = padT + (h - padT - padB) * (i/4);
-        ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
-      }
-      ctx.globalAlpha = 1;
-
-      const plotW = (w - padL - padR);
-      const step = plotW / pairs.length;
-      const barW = Math.max(18, Math.min(40, step * 0.55));
-
-      ctx.font = "12px system-ui";
-      for (let i=0;i<pairs.length;i++) {
-        const [name, count] = pairs[i];
-        const x = padL + step * i + (step - barW)/2;
-        const barH = (h - padT - padB) * (count / maxV);
-        ctx.fillRect(x, h - padB - barH, barW, barH);
-
-        const short = name.length > 14 ? name.slice(0, 12) + "…" : name;
-        ctx.globalAlpha = 0.85;
-        ctx.fillText(short, x - 6, h - 16);
-        ctx.globalAlpha = 1;
-      }
-    }
-
-    function refreshDashboard() {
-      const ref = el("refDate").value || todayDateValue();
-      const last7 = getLast7Days(state.entries, ref);
-
-      const n = last7.length;
-      el("kpiEntries").textContent = String(n);
-
-      const avgBefore = n ? (last7.reduce((s,e)=>s + Number(e.intensityBefore||0),0) / n) : 0;
-      const avgAfter  = n ? (last7.reduce((s,e)=>s + Number(e.intensityAfter||0),0) / n) : 0;
-      el("kpiAvgBefore").textContent = avgBefore.toFixed(1);
-      el("kpiAvgAfter").textContent = avgAfter.toFixed(1);
-      el("kpiDrop").textContent = (avgBefore - avgAfter).toFixed(1);
-
-      const completed = last7.filter(e => e.completed).length;
-      const rate = n ? Math.round((completed / n) * 100) : 0;
-      el("kpiCompletion").textContent = rate + "%";
-
-      const metricName = metricNameFromUI();
-      const metricTotal = last7.reduce((s,e)=>s + Number(e.metricValue||0),0);
-      el("kpiMetricTotal").textContent = String(metricTotal);
-
-      el("topDistortions").textContent = computeTopDistortions(last7);
-      el("weeklyReport").textContent = makeWeeklyReport(last7, metricName);
-
-      drawOverlay(last7, ref);
-      drawMetric(last7, ref);
-      drawDistortions(last7);
-
-      const body = el("recentBody");
-      body.innerHTML = "";
-
-      const recent = state.entries.slice(0, 12);
-      for (const e of recent) {
-        const d = parseDateSafe(e.date);
-        const dateStr = d ? d.toLocaleString() : "Unknown";
-        const done = e.completed ? "Yes" : "No";
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${escapeHtml(dateStr)}</td>
-          <td>${escapeHtml(e.contextTag || "")}</td>
-          <td>${escapeHtml(e.decisionPattern || "")}</td>
-          <td>${escapeHtml(e.emotion || "")}</td>
-          <td>${escapeHtml(Number(e.intensityBefore||0))}</td>
-          <td>${escapeHtml(Number(e.intensityAfter||0))}</td>
-          <td>${escapeHtml(e.distortion || "")}</td>
-          <td>${escapeHtml((e.action || "").slice(0, 48))}${(e.action||"").length>48 ? "…" : ""}</td>
-          <td>${escapeHtml(done)}</td>
-          <td>
-            <div class="actions">
-              <button class="linkbtn" type="button" data-act="toggle" data-id="${escapeHtml(e.id)}">${e.completed ? "Mark not done" : "Mark done"}</button>
-              <button class="linkbtn" type="button" data-act="edit" data-id="${escapeHtml(e.id)}">Edit</button>
-              <button class="linkbtn" type="button" data-act="del" data-id="${escapeHtml(e.id)}">Delete</button>
-            </div>
-          </td>
-        `;
-        body.appendChild(tr);
-      }
-    }
-
-    function refreshAll() {
-      state.entries = loadEntries().sort((a,b) => (parseDateSafe(b.date)?.getTime()||0) - (parseDateSafe(a.date)?.getTime()||0));
-      refreshDashboard();
-      const stored = localStorage.getItem(LS_KEY);
-      el("storagePill").textContent = stored ? "Storage: local (saved)" : "Storage: local (empty)";
-    }
-
-    function copyWeeklyReport() {
-      const text = el("weeklyReport").textContent || "";
-      if (!text || text === "No data yet") { alert("No report to copy yet."); return; }
-      navigator.clipboard.writeText(text).then(() => alert("Copied."));
-    }
-
-    function exportReportText() {
-      const text = el("weeklyReport").textContent || "";
-      if (!text || text === "No data yet") { alert("No report to export yet."); return; }
-      const blob = new Blob([text], { type: "text/plain" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "weekly-report.txt";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(a.href);
-    }
-
-    function init() {
-      migrateIfNeeded();
-
-      const settings = loadSettings();
-      el("metricPreset").value = settings.metricPreset || "Conversations";
-      el("metricCustom").value = settings.metricCustom || "";
-      syncMetricUI();
-
-      el("entryDate").value = nowLocalDatetimeValue();
-      el("refDate").value = todayDateValue();
-      syncEmotionOtherVisibility();
-      updateThoughtHints();
-
-      el("saveBtn").addEventListener("click", upsertEntry);
-      el("clearBtn").addEventListener("click", () => { state.editId = null; el("saveBtn").textContent = "Save entry"; clearForm(true); });
-      el("exportBtn").addEventListener("click", exportJson);
-      el("importBtn").addEventListener("click", () => el("importFile").click());
-      el("importFile").addEventListener("change", (ev) => {
-        const file = ev.target.files && ev.target.files[0];
-        if (file) importJsonFromFile(file);
-        ev.target.value = "";
-      });
-      el("wipeBtn").addEventListener("click", wipeData);
-
-      el("refDate").addEventListener("change", refreshDashboard);
-      el("intensityBefore").addEventListener("input", () => setRequiredActionMode(Number(el("intensityBefore").value || 0) >= 7));
-      el("emotionPick").addEventListener("change", syncEmotionOtherVisibility);
-      el("thought").addEventListener("input", updateThoughtHints);
-
-      el("metricPreset").addEventListener("change", () => {
-        syncMetricUI();
-        saveSettings({ metricPreset: el("metricPreset").value, metricCustom: el("metricCustom").value });
-        refreshDashboard();
-      });
-      el("metricCustom").addEventListener("input", () => {
-        syncMetricUI();
-        saveSettings({ metricPreset: el("metricPreset").value, metricCustom: el("metricCustom").value });
-        refreshDashboard();
-      });
-
-      el("decisionPattern").addEventListener("change", () => applyPattern(el("decisionPattern").value));
-
-      el("quickBtn").addEventListener("click", () => el("promptDialog").showModal());
-      el("closeDialogBtn").addEventListener("click", () => el("promptDialog").close());
-
-      el("recentBody").addEventListener("click", (ev) => {
-        const btn = ev.target.closest("button");
-        if (!btn) return;
-        const act = btn.getAttribute("data-act");
-        const id = btn.getAttribute("data-id");
-        if (!id) return;
-        if (act === "toggle") toggleCompleted(id);
-        if (act === "edit") loadIntoForm(id);
-        if (act === "del") deleteEntry(id);
-      });
-
-      el("copyReportBtn").addEventListener("click", copyWeeklyReport);
-
-      state.entries = loadEntries();
-      refreshAll();
-    }
-
-    init();
-  </script>
 </body>
 </html>
