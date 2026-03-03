@@ -146,7 +146,11 @@
       <div class="row two">
         <div>
           <label for="entryDate">Date and time</label>
-          <input id="entryDate" type="datetime-local" />
+          <div class="actions" style="gap:10px; align-items:center;">
+            <input id="entryDate" type="datetime-local" />
+            <button class="linkbtn" id="setNowBtn" type="button" style="width:auto; white-space:nowrap;">Now</button>
+          </div>
+          <div class="note" style="margin-top:6px;">Default is now. You can change it.</div>
         </div>
         <div>
           <label for="contextTag">Life area</label>
@@ -1171,6 +1175,8 @@ function init() {
   syncMetricUI();
 
   el("entryDate").value = nowLocalDatetimeValue();
+  const nowBtn = document.getElementById("setNowBtn");
+  if (nowBtn) nowBtn.addEventListener("click", () => { el("entryDate").value = nowLocalDatetimeValue(); });
   el("refDate").value = todayDateValue();
   syncEmotionOtherVisibility();
   setRequiredActionMode(Number(el("intensityBefore").value || 0) >= 7);
@@ -1187,6 +1193,7 @@ function init() {
   el("wipeBtn").addEventListener("click", wipeData);
 
   el("refDate").addEventListener("change", refreshDashboard);
+  el("entryDate").addEventListener("focus", () => { if (!el("entryDate").value) el("entryDate").value = nowLocalDatetimeValue(); });
   el("intensityBefore").addEventListener("input", () => setRequiredActionMode(Number(el("intensityBefore").value || 0) >= 7));
   el("emotionPick").addEventListener("change", syncEmotionOtherVisibility);
 
@@ -1300,6 +1307,43 @@ const tour = {
   index: 0,
   active: false
 };
+
+function ensureTourDom() {
+  if (document.getElementById("tourOverlay")) return;
+
+  const overlay = document.createElement("div");
+  overlay.id = "tourOverlay";
+  overlay.className = "tourOverlay";
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.innerHTML = `
+    <div id="tourHole" class="tourHole"></div>
+    <div id="tourCard" class="tourCard" role="dialog" aria-modal="true" aria-label="Guided instructions">
+      <div class="t" id="tourTitle">Guide</div>
+      <div class="b" id="tourBody"></div>
+      <div class="controls">
+        <button class="linkbtn" type="button" id="tourBackBtn">Back</button>
+        <button class="linkbtn" type="button" id="tourNextBtn">Next</button>
+        <button class="linkbtn" type="button" id="tourSkipBtn">Skip</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function ensureGuideButton() {
+  if (document.getElementById("startTourBtn")) return;
+  const pillHost = document.getElementById("storagePill");
+  if (!pillHost) return;
+  const btn = document.createElement("span");
+  btn.className = "pill";
+  btn.id = "startTourBtn";
+  btn.setAttribute("role", "button");
+  btn.setAttribute("tabindex", "0");
+  btn.style.marginLeft = "10px";
+  btn.style.cursor = "pointer";
+  btn.textContent = "Guide";
+  pillHost.insertAdjacentElement("afterend", btn);
+}
 
 function isTourCompleted() {
   try { return localStorage.getItem(TOUR_KEY) === "1"; } catch { return false; }
@@ -1421,6 +1465,9 @@ function backTour() {
 }
 
 function wireTour() {
+  ensureTourDom();
+  ensureGuideButton();
+
   const startBtn = el("startTourBtn");
   if (startBtn) {
     startBtn.addEventListener("click", () => { clearTourCompleted(); openTour(0); });
@@ -1444,8 +1491,12 @@ function wireTour() {
 
 
 init();
-window.addEventListener('DOMContentLoaded', () => {
-  wireTour();
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    wireTour();
+    if (!isTourCompleted()) { openTour(0); }
+  }, 120);
+});
   if (!isTourCompleted()) { openTour(0); }
 });
 
