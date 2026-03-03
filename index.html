@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Universal Decision Control System</title>
-  <meta name="description" content="Local-first decision review system for triggers, thoughts, emotions, reframes, resistance, and action." />
+  <title>Universal Decision Control System v2.2</title>
+  <meta name="description" content="Local-first decision review system with decision patterns, CBT distortions, resistance, reframes, actions, and 7-day analytics." />
   <style>
     :root { color-scheme: light dark; }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; }
     header { padding: 16px 18px; border-bottom: 1px solid rgba(127,127,127,.35); position: sticky; top: 0; background: Canvas; z-index: 2; }
-    main { padding: 16px 18px; max-width: 1060px; margin: 0 auto; }
+    main { padding: 16px 18px; max-width: 1100px; margin: 0 auto; }
     h1 { font-size: 18px; margin: 0; }
     .sub { opacity: .8; font-size: 13px; margin-top: 6px; line-height: 1.35; }
     .grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
@@ -41,7 +41,6 @@
     .footer { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(127,127,127,.25); font-size: 12px; opacity: .85; line-height: 1.4; }
     .req { color: rgb(255,90,90); font-weight: 700; }
     .hint { border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: 10px; margin-top: 10px; }
-    .hint strong { font-size: 12px; opacity: .9; }
     details.help { border: 1px solid rgba(127,127,127,.18); border-radius: 10px; padding: 8px 10px; margin: 6px 0 0; }
     details.help summary { cursor: pointer; font-size: 12px; opacity: .85; }
     details.help .h { font-size: 12px; opacity: .85; line-height: 1.35; margin-top: 8px; }
@@ -51,6 +50,9 @@
     .tophelp p { margin: 6px 0; font-size: 12px; opacity: .85; line-height: 1.35; }
     canvas { width: 100%; height: 160px; border: 1px solid rgba(127,127,127,.25); border-radius: 10px; }
     .badge { display:inline-block; padding: 2px 8px; border-radius: 999px; border: 1px solid rgba(127,127,127,.35); font-size: 12px; opacity: .85; }
+    .patternBox { border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: 10px; margin-top: 8px; }
+    .patternBox .t { font-size: 12px; opacity: .8; }
+    .patternBox .v { margin-top: 6px; font-size: 12px; opacity: .9; line-height: 1.35; }
   </style>
 </head>
 <body>
@@ -64,12 +66,12 @@
 
   <main>
     <div class="tophelp">
-      <h2>How to use this in 60 seconds</h2>
-      <p>1. Write the trigger as facts only.</p>
-      <p>2. Write the first automatic thought.</p>
-      <p>3. Pick the emotion and rate intensity before.</p>
-      <p>4. Pick a distortion and write one calm reframe sentence.</p>
-      <p>5. Choose one action and a deadline. Then do it.</p>
+      <h2>How to complete an entry fast</h2>
+      <p>Step 1. Choose a decision pattern. Let it prefill your reframe and action rule.</p>
+      <p>Step 2. Write the trigger as facts only and write the automatic thought.</p>
+      <p>Step 3. Pick one emotion and rate intensity before.</p>
+      <p>Step 4. Adjust the reframe if needed, then pick one small action and a real deadline.</p>
+      <p>Step 5. After you act, fill in experiment result and evidence, then mark done.</p>
       <p>Rule: if intensity before is 7 or higher, action and deadline are required.</p>
     </div>
 
@@ -81,7 +83,7 @@
             <input id="entryDate" type="datetime-local" />
             <details class="help">
               <summary>Help and example</summary>
-              <div class="h">Use the time the trigger happened or the time you are logging it.</div>
+              <div class="h">Use the time the trigger happened, or the time you are logging it.</div>
               <div class="ex">Example: 2026-03-02 13:10</div>
             </details>
           </div>
@@ -99,7 +101,7 @@
             </select>
             <details class="help">
               <summary>Help and example</summary>
-              <div class="h">Pick the area this entry belongs to. This helps you spot patterns.</div>
+              <div class="h">Pick the area this belongs to. This helps you spot patterns.</div>
               <div class="ex">Example: Work</div>
             </details>
           </div>
@@ -120,7 +122,7 @@
             </select>
             <details class="help">
               <summary>Help and example</summary>
-              <div class="h">This is the one number you want to increase weekly. It should reflect real effort, not vanity metrics.</div>
+              <div class="h">Choose one weekly number you want to increase. It should reflect real effort, not vanity.</div>
               <div class="ex">Example: Calls made</div>
             </details>
           </div>
@@ -134,6 +136,38 @@
             </details>
           </div>
         </div>
+
+        <label for="decisionPattern">Decision pattern</label>
+        <select id="decisionPattern">
+          <option value="">Select a pattern</option>
+          <optgroup label="Negative patterns">
+            <option value="All-or-Nothing">All-or-Nothing</option>
+            <option value="Catastrophizing">Catastrophizing</option>
+            <option value="Mind Reading">Mind Reading</option>
+            <option value="Emotional Reasoning">Emotional Reasoning</option>
+            <option value="Overgeneralizing">Overgeneralizing</option>
+            <option value="Avoidance Loop">Avoidance Loop</option>
+            <option value="Shame Loop">Shame Loop</option>
+          </optgroup>
+          <optgroup label="Positive patterns">
+            <option value="Incremental Progress">Incremental Progress</option>
+            <option value="Evidence Based">Evidence Based</option>
+            <option value="Identity Based">Identity Based</option>
+            <option value="Exposure Rule">Exposure Rule</option>
+            <option value="Data Over Drama">Data Over Drama</option>
+            <option value="Long Game">Long Game</option>
+            <option value="Recovery Rule">Recovery Rule</option>
+          </optgroup>
+        </select>
+        <div id="patternBox" class="patternBox" style="display:none;">
+          <div class="t">Pattern suggestions</div>
+          <div class="v" id="patternSuggestion"></div>
+        </div>
+        <details class="help">
+          <summary>Help and example</summary>
+          <div class="h">Pick the pattern that fits your moment. The app will suggest a reframe and action rule. You can edit them.</div>
+          <div class="ex">Example: Avoidance Loop</div>
+        </details>
 
         <label for="trigger">Trigger event (facts only)</label>
         <textarea id="trigger" placeholder="Example: I studied 20 minutes and stopped."></textarea>
@@ -152,8 +186,7 @@
         </details>
 
         <div class="hint" id="thoughtHints" style="display:none;">
-          <strong>Pattern flags</strong>
-          <div class="note" id="hintText" style="margin-top:6px;"> </div>
+          <div class="note" id="hintText" style="margin-top:0;"> </div>
         </div>
 
         <div class="row two">
@@ -211,13 +244,13 @@
               <option value="All-or-nothing">All-or-nothing</option>
               <option value="Catastrophizing">Catastrophizing</option>
               <option value="Mind-reading">Mind-reading</option>
-              <option value="Emotional-reasoning">Emotional reasoning</option>
+              <option value="Emotional reasoning">Emotional reasoning</option>
               <option value="Overgeneralizing">Overgeneralizing</option>
               <option value="Personalization">Personalization</option>
-              <option value="Should-statements">Should statements</option>
+              <option value="Should statements">Should statements</option>
               <option value="Labeling">Labeling</option>
-              <option value="Discounting-the-positive">Discounting the positive</option>
-              <option value="Fortune-telling">Fortune telling</option>
+              <option value="Discounting the positive">Discounting the positive</option>
+              <option value="Fortune telling">Fortune telling</option>
               <option value="Other">Other</option>
             </select>
             <details class="help">
@@ -329,18 +362,18 @@
           </div>
         </div>
 
-        <label for="result">Notes</label>
-        <textarea id="result" class="small" placeholder="Example: Best time to do this is early morning."></textarea>
+        <label for="notes">Notes</label>
+        <textarea id="notes" class="small" placeholder="Example: My thoughts spike after scrolling at night."></textarea>
         <details class="help">
           <summary>Help and example</summary>
-          <div class="h">Any extra notes you want when you review later.</div>
-          <div class="ex">Example: My thoughts spike after scrolling at night.</div>
+          <div class="h">Anything you want to remember later. Keep it short.</div>
+          <div class="ex">Example: Avoid phone for 30 minutes after waking.</div>
         </details>
 
         <div class="btnrow">
           <button id="saveBtn" type="button">Save entry</button>
           <button id="clearBtn" type="button">Clear form</button>
-          <button id="quickReframeBtn" type="button">Quick prompts</button>
+          <button id="quickBtn" type="button">Quick prompts</button>
         </div>
 
         <div class="note">
@@ -400,7 +433,7 @@
 
         <div style="margin-top: 12px;">
           <div class="muted">Weekly report</div>
-          <div id="weeklyReport" class="note">No data yet</div>
+          <pre id="weeklyReport" class="note" style="white-space:pre-wrap;margin:0;">No data yet</pre>
           <div class="actions" style="margin-top: 8px;">
             <button class="linkbtn" id="copyReportBtn" type="button">Copy report</button>
           </div>
@@ -411,7 +444,7 @@
           <table aria-label="Recent entries table">
             <thead>
               <tr>
-                <th>Date</th><th>Area</th><th>Emotion</th><th>Before</th><th>After</th><th>Distortion</th><th>Action</th><th>Done</th><th></th>
+                <th>Date</th><th>Area</th><th>Pattern</th><th>Emotion</th><th>Before</th><th>After</th><th>Distortion</th><th>Action</th><th>Done</th><th></th>
               </tr>
             </thead>
             <tbody id="recentBody"></tbody>
@@ -426,13 +459,13 @@
   <dialog id="promptDialog">
     <div style="padding: 14px; max-width: 680px;">
       <div style="font-weight: 700; margin-bottom: 8px;">Quick prompts</div>
-      <div class="note" style="margin-top:0;">Keep it short. Then pick an action and test the thought.</div>
+      <div class="note" style="margin-top:0;">Use one prompt, then take one small action.</div>
       <ul class="note">
-        <li>What is the fact, and what is the story I am adding?</li>
-        <li>If my best friend said this thought, what would I tell them?</li>
-        <li>What would a calm, disciplined version of me do next?</li>
+        <li>What is the fact, and what story am I adding?</li>
+        <li>What would I tell a friend who said this thought?</li>
         <li>What is one small proof I can create in the next 2 hours?</li>
         <li>What rule would I follow if I wanted less regret later?</li>
+        <li>What is the smallest next step that still counts?</li>
       </ul>
       <div class="actions" style="justify-content:flex-end;">
         <button class="linkbtn" id="closeDialogBtn" type="button">Close</button>
@@ -441,34 +474,113 @@
   </dialog>
 
   <script>
-    // Data key (new universal key). We auto-migrate from older keys if found.
-    const LS_KEY = "universal_decision_control_v2_1";
-    const OLD_KEYS = ["decision_control_entries_v1_3", "decision_control_entries_v1_3_with_help", "decision_control_entries_v1_5"];
-    const SETTINGS_KEY = "universal_decision_control_settings_v2_1";
+    const LS_KEY = "universal_decision_control_v2_2";
+    const SETTINGS_KEY = "universal_decision_control_settings_v2_2";
+
+    const OLD_KEYS = [
+      "universal_decision_control_v2_1",
+      "universal_v3",
+      "decision_control_entries_v1_3",
+      "decision_control_entries_v1_3_with_help",
+      "decision_control_entries_v1_5"
+    ];
+
+    const PATTERNS = {
+      "All-or-Nothing": {
+        reframe: "Small progress still counts. I will do one small rep now.",
+        action: "Do a 10-minute version now. Stop after 10 minutes.",
+        distortion: "All-or-nothing"
+      },
+      "Catastrophizing": {
+        reframe: "This is a setback, not a collapse. I can stabilize with one step.",
+        action: "Do one stabilizing action today, then reassess.",
+        distortion: "Catastrophizing"
+      },
+      "Mind Reading": {
+        reframe: "I do not have proof of what others think. I will act on facts.",
+        action: "Send one message or publish one post, then measure the response.",
+        distortion: "Mind-reading"
+      },
+      "Emotional Reasoning": {
+        reframe: "My feelings are signals, not commands. I can act despite emotion.",
+        action: "Do one action rep even if I feel unsure.",
+        distortion: "Emotional reasoning"
+      },
+      "Overgeneralizing": {
+        reframe: "One event does not define the whole pattern. I can try again with a smaller step.",
+        action: "Repeat one controlled rep and track the result.",
+        distortion: "Overgeneralizing"
+      },
+      "Avoidance Loop": {
+        reframe: "Delay increases stress. Starting small reduces stress.",
+        action: "Start for 5 minutes right now. Continue only if it feels manageable.",
+        distortion: "Emotional reasoning"
+      },
+      "Shame Loop": {
+        reframe: "Shame does not help. A clean rep helps. I will do one clean rep now.",
+        action: "Do one clean rep and mark it done. No extra judgement.",
+        distortion: "Labeling"
+      },
+      "Incremental Progress": {
+        reframe: "Small steps compound. Today counts.",
+        action: "Do the smallest version daily this week.",
+        distortion: "Discounting the positive"
+      },
+      "Evidence Based": {
+        reframe: "I will use evidence, not assumptions. I will check one fact.",
+        action: "Measure one input and make one adjustment.",
+        distortion: "Fortune telling"
+      },
+      "Identity Based": {
+        reframe: "I act like the person I am becoming. I do one identity rep now.",
+        action: "Execute one identity rep and capture proof.",
+        distortion: "Other"
+      },
+      "Exposure Rule": {
+        reframe: "Growth requires discomfort. I will do a small safe exposure rep.",
+        action: "Do one uncomfortable rep at a small safe level.",
+        distortion: "Catastrophizing"
+      },
+      "Data Over Drama": {
+        reframe: "Numbers over narrative. I will track today and adjust.",
+        action: "Track the primary metric today and do one rep to increase it.",
+        distortion: "Emotional reasoning"
+      },
+      "Long Game": {
+        reframe: "This is one rep in a long series. I will keep the cadence.",
+        action: "Do one rep today. Keep the streak alive.",
+        distortion: "Overgeneralizing"
+      },
+      "Recovery Rule": {
+        reframe: "A reset within 24 hours protects momentum. I restart now.",
+        action: "Restart now with the smallest version, then schedule the next rep.",
+        distortion: "All-or-nothing"
+      }
+    };
 
     const el = id => document.getElementById(id);
 
+    function pad(n){ return String(n).padStart(2, "0"); }
+
     function nowLocalDatetimeValue() {
       const d = new Date();
-      const pad = n => String(n).padStart(2, "0");
       return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
 
     function todayDateValue() {
       const d = new Date();
-      const pad = n => String(n).padStart(2, "0");
       return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    }
+
+    function parseDateSafe(val) {
+      const d = new Date(val);
+      return isNaN(d.getTime()) ? null : d;
     }
 
     function escapeHtml(s) {
       return String(s || "").replace(/[&<>"']/g, c => ({
         "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
       }[c]));
-    }
-
-    function parseDateSafe(val) {
-      const d = new Date(val);
-      return isNaN(d.getTime()) ? null : d;
     }
 
     function loadSettings() {
@@ -512,56 +624,56 @@
       }
     }
 
+    function normalizeImportedEntry(e) {
+      const metricValue = Number(e.metricValue ?? e.metric ?? e.conversations ?? 0);
+      const intensityBefore = Number(e.intensityBefore ?? e.before ?? 0);
+      const intensityAfter = Number(e.intensityAfter ?? e.after ?? 0);
+
+      return {
+        id: e.id || (Math.random().toString(16).slice(2) + Date.now().toString(16)),
+        date: e.date || new Date().toISOString(),
+        contextTag: e.contextTag || "Other",
+        metricName: e.metricName || e.metricLabel || metricNameFromUI(),
+        decisionPattern: e.decisionPattern || "",
+        trigger: e.trigger || "",
+        thought: e.thought || "",
+        emotion: e.emotion || "",
+        beliefBefore: Number(e.beliefBefore || 0),
+        beliefAfter: Number(e.beliefAfter || 0),
+        intensityBefore,
+        intensityAfter,
+        distortion: e.distortion || "Other",
+        resistance: e.resistance || "",
+        reframe: e.reframe || "",
+        action: e.action || "",
+        deadline: e.deadline || "",
+        completed: !!e.completed,
+        experiment: e.experiment || "",
+        evidence: e.evidence || "",
+        metricValue,
+        identity: e.identity || "",
+        notes: e.notes || e.result || "",
+        updatedAt: e.updatedAt || new Date().toISOString()
+      };
+    }
+
     function migrateIfNeeded() {
       const existing = loadEntriesDirect(LS_KEY);
       if (existing.length) return;
 
-      // Try to migrate from any old key (best effort).
       for (const k of OLD_KEYS) {
         const old = loadEntriesDirect(k);
         if (!old.length) continue;
-
-        const migrated = old.map(e => ({
-          id: e.id || (Math.random().toString(16).slice(2) + Date.now().toString(16)),
-          date: e.date || new Date().toISOString(),
-          contextTag: e.contextTag || "Other",
-          trigger: e.trigger || "",
-          thought: e.thought || "",
-          emotion: e.emotion || "",
-          beliefBefore: Number(e.beliefBefore || 0),
-          beliefAfter: Number(e.beliefAfter || 0),
-          intensityBefore: Number(e.intensityBefore || 0),
-          intensityAfter: Number(e.intensityAfter || 0),
-          distortion: e.distortion || "Other",
-          resistance: e.resistance || "",
-          reframe: e.reframe || "",
-          action: e.action || "",
-          deadline: e.deadline || "",
-          completed: !!e.completed,
-          experiment: e.experiment || "",
-          evidence: e.evidence || "",
-          metricValue: Number(e.conversations ?? e.metricValue ?? 0),
-          identity: e.identity || "",
-          notes: e.result || e.notes || "",
-          updatedAt: e.updatedAt || new Date().toISOString()
-        }));
-
+        const migrated = old.map(normalizeImportedEntry);
         localStorage.setItem(LS_KEY, JSON.stringify(migrated));
         break;
       }
     }
 
-    function loadEntries() {
-      return loadEntriesDirect(LS_KEY);
-    }
+    function loadEntries() { return loadEntriesDirect(LS_KEY); }
+    function saveEntries(entries) { localStorage.setItem(LS_KEY, JSON.stringify(entries)); }
 
-    function saveEntries(entries) {
-      localStorage.setItem(LS_KEY, JSON.stringify(entries));
-    }
-
-    function uuid() {
-      return Math.random().toString(16).slice(2) + Date.now().toString(16);
-    }
+    function uuid() { return Math.random().toString(16).slice(2) + Date.now().toString(16); }
 
     function selectedEmotion() {
       const pick = el("emotionPick").value;
@@ -586,11 +698,11 @@
       const t = (el("thought").value || "").toLowerCase();
       const flags = [];
       const hasAny = arr => arr.some(w => t.includes(w));
-      if (hasAny(["always","never","every time","nothing ever","no one ever"])) flags.push("Possible all-or-nothing or overgeneralizing");
-      if (hasAny(["everyone","nobody","people think","they think","they all"])) flags.push("Possible mind-reading or overgeneralizing");
-      if (hasAny(["should","must","have to"])) flags.push("Possible should-statements");
-      if (hasAny(["ruined","disaster","catastrophe","impossible"])) flags.push("Possible catastrophizing");
-      if (hasAny(["i feel","because i feel"])) flags.push("Possible emotional reasoning");
+      if (hasAny(["always","never","every time","nothing ever","no one ever"])) flags.push("Pattern flag: all-or-nothing or overgeneralizing");
+      if (hasAny(["everyone","nobody","people think","they think","they all"])) flags.push("Pattern flag: mind-reading or overgeneralizing");
+      if (hasAny(["should","must","have to"])) flags.push("Pattern flag: should-statements");
+      if (hasAny(["ruined","disaster","catastrophe","impossible"])) flags.push("Pattern flag: catastrophizing");
+      if (hasAny(["because i feel","i feel like it means"])) flags.push("Pattern flag: emotional reasoning");
 
       if (flags.length) {
         el("thoughtHints").style.display = "block";
@@ -598,6 +710,24 @@
       } else {
         el("thoughtHints").style.display = "none";
         el("hintText").textContent = "";
+      }
+    }
+
+    function applyPattern(p) {
+      if (!p || !PATTERNS[p]) {
+        el("patternBox").style.display = "none";
+        el("patternSuggestion").textContent = "";
+        return;
+      }
+      const s = PATTERNS[p];
+      el("patternBox").style.display = "block";
+      el("patternSuggestion").textContent = "Reframe: " + s.reframe + "  Action rule: " + s.action;
+
+      if (!el("reframe").value.trim()) el("reframe").value = s.reframe;
+      if (!el("action").value.trim()) el("action").value = s.action;
+
+      if (el("distortion").value === "Other" || !el("distortion").value) {
+        el("distortion").value = s.distortion || "Other";
       }
     }
 
@@ -627,6 +757,7 @@
         date: el("entryDate").value || nowLocalDatetimeValue(),
         contextTag: el("contextTag").value,
         metricName: metricNameFromUI(),
+        decisionPattern: el("decisionPattern").value,
         trigger: el("trigger").value.trim(),
         thought: el("thought").value.trim(),
         emotion: selectedEmotion(),
@@ -644,7 +775,7 @@
         evidence: el("evidence").value.trim(),
         metricValue: Number(el("metricValue").value || 0),
         identity: el("identity").value.trim(),
-        notes: el("result").value.trim(),
+        notes: el("notes").value.trim(),
         updatedAt: new Date().toISOString()
       };
 
@@ -667,6 +798,9 @@
     function clearForm(resetDate) {
       if (resetDate) el("entryDate").value = nowLocalDatetimeValue();
       el("contextTag").value = "Work";
+      el("decisionPattern").value = "";
+      el("patternBox").style.display = "none";
+      el("patternSuggestion").textContent = "";
       el("trigger").value = "";
       el("thought").value = "";
       el("emotionPick").value = "";
@@ -684,7 +818,7 @@
       el("evidence").value = "";
       el("metricValue").value = 0;
       el("identity").value = "";
-      el("result").value = "";
+      el("notes").value = "";
       syncEmotionOtherVisibility();
       setRequiredActionMode(false);
       updateThoughtHints();
@@ -709,7 +843,6 @@
       el("entryDate").value = e.date || nowLocalDatetimeValue();
       el("contextTag").value = e.contextTag || "Other";
 
-      // metric settings follow the entry (so the dashboard stays coherent)
       if (e.metricName) {
         const presets = Array.from(el("metricPreset").options).map(o => o.value);
         if (presets.includes(e.metricName)) {
@@ -721,6 +854,9 @@
         }
       }
       syncMetricUI();
+
+      el("decisionPattern").value = e.decisionPattern || "";
+      applyPattern(el("decisionPattern").value);
 
       el("trigger").value = e.trigger || "";
       el("thought").value = e.thought || "";
@@ -748,7 +884,7 @@
       el("evidence").value = e.evidence || "";
       el("metricValue").value = e.metricValue ?? 0;
       el("identity").value = e.identity || "";
-      el("result").value = e.notes || "";
+      el("notes").value = e.notes || "";
 
       setRequiredActionMode(Number(el("intensityBefore").value || 0) >= 7);
       updateThoughtHints();
@@ -782,36 +918,11 @@
           const merged = [...state.entries];
           const existingIds = new Set(merged.map(e => e.id));
 
-          for (const e of parsed) {
-            if (!e || typeof e !== "object") continue;
-            if (!e.id) e.id = uuid();
+          for (const raw of parsed) {
+            if (!raw || typeof raw !== "object") continue;
+            const e = normalizeImportedEntry(raw);
             if (existingIds.has(e.id)) continue;
-
-            merged.push({
-              id: e.id,
-              date: e.date || new Date().toISOString(),
-              contextTag: e.contextTag || "Other",
-              metricName: e.metricName || e.metricLabel || metricNameFromUI(),
-              trigger: e.trigger || "",
-              thought: e.thought || "",
-              emotion: e.emotion || "",
-              beliefBefore: Number(e.beliefBefore || 0),
-              beliefAfter: Number(e.beliefAfter || 0),
-              intensityBefore: Number(e.intensityBefore || 0),
-              intensityAfter: Number(e.intensityAfter || 0),
-              distortion: e.distortion || "Other",
-              resistance: e.resistance || "",
-              reframe: e.reframe || "",
-              action: e.action || "",
-              deadline: e.deadline || "",
-              completed: !!e.completed,
-              experiment: e.experiment || "",
-              evidence: e.evidence || "",
-              metricValue: Number(e.metricValue ?? e.conversations ?? 0),
-              identity: e.identity || "",
-              notes: e.notes || e.result || "",
-              updatedAt: e.updatedAt || new Date().toISOString()
-            });
+            merged.push(e);
             existingIds.add(e.id);
           }
 
@@ -875,6 +986,13 @@
       for (const e of last7) dCounts[e.distortion||"Unknown"] = (dCounts[e.distortion||"Unknown"]||0)+1;
       const topDist = Object.entries(dCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || "Unknown";
 
+      const pCounts = {};
+      for (const e of last7) {
+        if (!e.decisionPattern) continue;
+        pCounts[e.decisionPattern] = (pCounts[e.decisionPattern]||0)+1;
+      }
+      const topPattern = Object.entries(pCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || "None";
+
       const actionGap = rate < 70 ? "Tighten the action so it takes 10 minutes or less. Then do it daily." : "Keep the same rule and maintain cadence.";
       const intensityMove = drop < 1 ? "Make the reframe one calm sentence and include one fact that supports it." : "Your reframes are working. Keep measuring the drop.";
       const metricMove = metricTotal === 0 ? `Make ${metricName} the default action when intensity is high.` : `Repeat the actions that increased ${metricName}.`;
@@ -887,10 +1005,11 @@
         `Action completion: ${rate}%`,
         `${metricName}: ${metricTotal}`,
         `Top distortion: ${topDist}`,
+        `Top decision pattern: ${topPattern}`,
         `Next rule tweak: ${actionGap}`,
         `Next focus: ${intensityMove}`,
         `Outcome focus: ${metricMove}`
-      ].join("\\n");
+      ].join("\n");
     }
 
     function compute7DayBuckets(refDateStr) {
@@ -1115,6 +1234,7 @@
         tr.innerHTML = `
           <td>${escapeHtml(dateStr)}</td>
           <td>${escapeHtml(e.contextTag || "")}</td>
+          <td>${escapeHtml(e.decisionPattern || "")}</td>
           <td>${escapeHtml(e.emotion || "")}</td>
           <td>${escapeHtml(Number(e.intensityBefore||0))}</td>
           <td>${escapeHtml(Number(e.intensityAfter||0))}</td>
@@ -1146,10 +1266,22 @@
       navigator.clipboard.writeText(text).then(() => alert("Copied."));
     }
 
+    function exportReportText() {
+      const text = el("weeklyReport").textContent || "";
+      if (!text || text === "No data yet") { alert("No report to export yet."); return; }
+      const blob = new Blob([text], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "weekly-report.txt";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }
+
     function init() {
       migrateIfNeeded();
 
-      // settings
       const settings = loadSettings();
       el("metricPreset").value = settings.metricPreset || "Conversations";
       el("metricCustom").value = settings.metricCustom || "";
@@ -1160,7 +1292,6 @@
       syncEmotionOtherVisibility();
       updateThoughtHints();
 
-      // events
       el("saveBtn").addEventListener("click", upsertEntry);
       el("clearBtn").addEventListener("click", () => { state.editId = null; el("saveBtn").textContent = "Save entry"; clearForm(true); });
       el("exportBtn").addEventListener("click", exportJson);
@@ -1188,7 +1319,9 @@
         refreshDashboard();
       });
 
-      el("quickReframeBtn").addEventListener("click", () => el("promptDialog").showModal());
+      el("decisionPattern").addEventListener("change", () => applyPattern(el("decisionPattern").value));
+
+      el("quickBtn").addEventListener("click", () => el("promptDialog").showModal());
       el("closeDialogBtn").addEventListener("click", () => el("promptDialog").close());
 
       el("recentBody").addEventListener("click", (ev) => {
