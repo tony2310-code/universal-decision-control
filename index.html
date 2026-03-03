@@ -6,7 +6,6 @@
   <title>Universal Decision Control System v2.2</title>
   <meta name="description" content="Local-first decision review system with decision patterns, CBT distortions, resistance, reframes, actions, and 7-day analytics." />
   <style>
-    :root { color-scheme: light dark; }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; }
     header { padding: 16px 18px; border-bottom: 1px solid rgba(127,127,127,.35); position: sticky; top: 0; background: Canvas; z-index: 2; }
     main { padding: 16px 18px; max-width: 1100px; margin: 0 auto; }
@@ -54,6 +53,44 @@
     .patternBox .t { font-size: 12px; opacity: .8; }
     .patternBox .v { margin-top: 6px; font-size: 12px; opacity: .9; line-height: 1.35; }
   </style>
+
+<style id="force-dark-theme">
+/* Force dark theme everywhere */
+html, body {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+header, main, dialog, section, article, div {
+  background: transparent !important;
+}
+header {
+  background: #000000 !important;
+  border-bottom: 1px solid #2a2a2a !important;
+}
+.card, .tophelp, .kpi, .hint, details.help, .patternBox {
+  background: #0f0f0f !important;
+  border-color: #2a2a2a !important;
+}
+input, textarea, select, button, pre, table, th, td {
+  background: #141414 !important;
+  color: #ffffff !important;
+  border-color: #3a3a3a !important;
+}
+button, .linkbtn {
+  background: #1a1a1a !important;
+}
+button:hover, .linkbtn:hover {
+  background: #242424 !important;
+}
+a { color: #9bdcff !important; }
+.muted, .sub, .note { color: rgba(255,255,255,.78) !important; opacity: 1 !important; }
+.pill, .badge { border-color: #3a3a3a !important; background: #0f0f0f !important; color: rgba(255,255,255,.9) !important; }
+table { background: #0f0f0f !important; }
+th, td { border-bottom-color: #2a2a2a !important; }
+canvas { background: #0f0f0f !important; border-color: #2a2a2a !important; }
+dialog::backdrop { background: rgba(0,0,0,.7) !important; }
+</style>
+
 </head>
 <body>
   <header>
