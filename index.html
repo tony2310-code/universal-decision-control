@@ -40,6 +40,28 @@
   <h1>Behavior Decoder</h1>
   <p class="small">Decode your behavior loop fast. Everything stays on your device unless you export.</p>
 
+  <div class="card" style="margin-top:12px">
+    <div style="font-weight:900;font-size:18px;margin-bottom:8px">1 to 3 words max</div>
+    <div class="small" style="margin:0;line-height:1.45">
+      Keep every field short. Short inputs make patterns obvious.
+    </div>
+  </div>
+
+  <div class="card" id="guideCard">
+    <h3 style="margin-top:0">Quick guide</h3>
+    <div class="small" style="line-height:1.55">
+      1. Situation: what happened (1–3 words).<br>
+      2. Thought: what you told yourself (1–3 words).<br>
+      3. Emotion: what you felt (1–3 words).<br>
+      4. Action: what you did (1–3 words).<br>
+      5. Result: what happened next (1–3 words).<br>
+      6. Correction: the better action (1–3 words). Add a deadline if intensity is 7+.<br>
+      7. Save: read the summary and check the loop type.<br><br>
+      Tip: if you do not see your exact word in the dropdown, pick Other and type it.
+    </div>
+  </div>
+
+
   <details open>
     <summary>1) Decode</summary>
 
@@ -184,6 +206,23 @@ const KEY = "behavior_decoder_entries_v1_2";
 function cleanText(s){
   return (s || "").toString().trim().replace(/\s+/g," ");
 }
+
+function wordCount(s){
+  const t = cleanText(s);
+  if(!t) return 0;
+  return t.split(/\s+/).filter(Boolean).length;
+}
+
+function ensureMax3Words(label, value){
+  const n = wordCount(value);
+  if(n === 0) return true;
+  if(n > 3){
+    alert(label + " must be 1 to 3 words. You entered " + n + ".");
+    return false;
+  }
+  return true;
+}
+
 
 function toggleOther(selectId, wrapId){
   const sel = document.getElementById(selectId);
@@ -400,6 +439,13 @@ function decodeAndSave(){
   const result = cleanText(document.getElementById("result").value);
   const fix = cleanText(document.getElementById("fix").value);
   const deadline = document.getElementById("deadline").value;
+
+  if(!ensureMax3Words("Situation", situation)) return;
+  if(!ensureMax3Words("Thought", thought)) return;
+  if(!ensureMax3Words("Emotion", emotion)) return;
+  if(!ensureMax3Words("Action", action)) return;
+  if(!ensureMax3Words("Result", result)) return;
+  if(fix && !ensureMax3Words("Corrective action", fix)) return;
 
   if(!situation) return alert("Situation is required.");
   if(!thought) return alert("Thought is required.");
