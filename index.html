@@ -1,340 +1,847 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Behavior Loop Decoder</title>
-
+<title>Behavior Decoder</title>
 <style>
-body{
-    font-family: Arial, sans-serif;
-    background:#111;
-    color:white;
-    padding:20px;
-}
-
-.container{
-    max-width:900px;
-    margin:auto;
-}
-
-h1{
-    margin-top:0;
-}
-
-input, select{
-    width:100%;
-    padding:10px;
-    margin-top:6px;
-    margin-bottom:14px;
-    background:#222;
-    border:1px solid #444;
-    color:white;
-}
-
-button{
-    padding:10px 16px;
-    margin-right:10px;
-    background:#ffc94a;
-    border:none;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.card{
-    background:#1b1b1b;
-    padding:16px;
-    margin-top:16px;
-    border-radius:8px;
-}
-
-.loop{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin-top:12px;
-}
-
-.loop div{
-    flex:1;
-    background:#222;
-    padding:10px;
-    border-radius:6px;
-    text-align:center;
-}
-
-.red{background:#5c1f1f}
-.green{background:#1f5c2e}
-.yellow{background:#5c521f}
-
-.small{
-    font-size:13px;
-    opacity:.7;
-}
+  body{font-family:Arial,Helvetica,sans-serif;background:#111;color:#fff;margin:0;padding:20px}
+  .container{max-width:980px;margin:auto}
+  h1{margin:0 0 6px}
+  .small{font-size:13px;opacity:.75;margin:0 0 16px;line-height:1.35}
+  h3{margin:18px 0 10px}
+  label{display:block;font-weight:700;margin-top:10px}
+  input,select{width:100%;box-sizing:border-box;padding:10px;margin-top:6px;margin-bottom:10px;background:#222;border:1px solid #444;color:#fff;border-radius:10px;font-size:16px}
+  .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;align-items:center}
+  button{padding:10px 14px;background:#ffc94a;border:none;border-radius:12px;font-weight:900;cursor:pointer}
+  button:hover{background:#ffda7a}
+  .btnGhost{background:#444;color:#fff}
+  .btnGhost:hover{background:#555}
+  .card{background:#1b1b1b;padding:16px;margin-top:16px;border-radius:14px;border:1px solid #2a2a2a}
+  .loop{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .loop .box{flex:1;min-width:140px;background:#222;padding:12px;border-radius:12px;text-align:center;border:1px solid #2a2a2a}
+  .red{background:#5c1f1f!important}
+  .green{background:#1f5c2e!important}
+  .yellow{background:#5c521f!important}
+  .history-item{border-top:1px solid #333;padding:12px 0}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  .rowBetween{display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .otherWrap{display:none}
+  .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#222;border:1px solid #333;font-size:12px}
+  .grid2{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:820px){ .grid2{grid-template-columns:1fr 1fr;} }
+  canvas{width:100%;height:180px;background:#161616;border:1px solid #2a2a2a;border-radius:12px}
+  details{background:#191919;border:1px solid #2a2a2a;border-radius:14px;padding:12px}
+  summary{cursor:pointer;font-weight:900}
 </style>
 </head>
-
 <body>
-
 <div class="container">
+  <h1>Behavior Decoder</h1>
+  <p class="small">Decode your behavior loop fast. Everything stays on your device unless you export.</p>
 
-<h1>Behavior Loop Decoder</h1>
-<p class="small">Use short phrases (1–3 words).</p>
+  <details open>
+    <summary>1) Decode</summary>
 
-<label>Date and time</label>
-<input id="dt" type="datetime-local">
+    <label>Date and time</label>
+    <input id="dt" type="datetime-local">
 
-<h3>Decode What Happened</h3>
+    <label>Situation</label>
+    <input id="situation" placeholder="example: no replies">
 
-<label>Situation</label>
-<input id="situation" placeholder="example: no replies">
+    <label>Thought</label>
+    <select id="thoughtPick" onchange="toggleOther('thoughtPick','thoughtOtherWrap');maybeWarn()">
+      <optgroup label="Negative thoughts">
+        <option>Nobody cares</option>
+        <option>Nobody interested</option>
+        <option>I will fail</option>
+        <option>This is pointless</option>
+        <option>I am behind</option>
+      </optgroup>
+      <optgroup label="Positive thoughts">
+        <option>I can do this</option>
+        <option>One step now</option>
+        <option>I am improving</option>
+        <option>This will work</option>
+        <option>I am capable</option>
+      </optgroup>
+      <option>Other</option>
+    </select>
+    <div id="thoughtOtherWrap" class="otherWrap">
+      <input id="thoughtOther" placeholder="type your thought (1–3 words)">
+    </div>
 
-<label>Thought</label>
-<input id="thought" placeholder="example: nobody interested">
+    <label>Emotion</label>
+    <select id="emotionPick" onchange="toggleOther('emotionPick','emotionOtherWrap');maybeWarn()">
+      <optgroup label="Negative emotions">
+        <option>Hopeless</option>
+        <option>Frustrated</option>
+        <option>Anxious</option>
+        <option>Overwhelmed</option>
+        <option>Insecure</option>
+      </optgroup>
+      <optgroup label="Positive emotions">
+        <option>Calm</option>
+        <option>Confident</option>
+        <option>Motivated</option>
+        <option>Aligned</option>
+        <option>Hopeful</option>
+      </optgroup>
+      <option>Other</option>
+    </select>
+    <div id="emotionOtherWrap" class="otherWrap">
+      <input id="emotionOther" placeholder="type your emotion (1–3 words)">
+    </div>
 
-<label>Emotion</label>
-<select id="emotion">
-<option>Hopeless</option>
-<option>Frustrated</option>
-<option>Anxious</option>
-<option>Overwhelmed</option>
-<option>Calm</option>
-<option>Confident</option>
-<option>Motivated</option>
-<option>Other</option>
-</select>
+    <label>Emotion intensity (0–10)</label>
+    <input id="intensity" type="number" min="0" max="10" inputmode="numeric" onchange="maybeWarn()">
 
-<label>Emotion Intensity (0-10)</label>
-<input id="intensity" type="number" min="0" max="10">
+    <label>Action</label>
+    <select id="actionPick" onchange="toggleOther('actionPick','actionOtherWrap');maybeWarn()">
+      <optgroup label="Negative actions">
+        <option>Avoided it</option>
+        <option>Stopped trying</option>
+        <option>Procrastinated</option>
+        <option>Got distracted</option>
+        <option>Argued</option>
+      </optgroup>
+      <optgroup label="Positive actions">
+        <option>Took action</option>
+        <option>Tried again</option>
+        <option>Started small</option>
+        <option>Asked for help</option>
+        <option>Stayed consistent</option>
+      </optgroup>
+      <option>Other</option>
+    </select>
+    <div id="actionOtherWrap" class="otherWrap">
+      <input id="actionOther" placeholder="type your action (1–3 words)">
+    </div>
 
-<label>Action</label>
-<input id="action" placeholder="example: stopped posting">
+    <label>Result</label>
+    <input id="result" placeholder="example: no progress">
 
-<label>Result</label>
-<input id="result" placeholder="example: no progress">
+    <h3>2) Correction</h3>
 
-<h3>Correction</h3>
+    <label>Corrective action</label>
+    <input id="fix" placeholder="example: post again">
 
-<label>Corrective Action</label>
-<input id="fix" placeholder="example: post again">
+    <label>Action deadline</label>
+    <input id="deadline" type="datetime-local">
 
-<label>Action Deadline</label>
-<input id="deadline" type="datetime-local">
+    <div class="btnRow">
+      <button type="button" onclick="decodeAndSave()">Decode + Save</button>
+      <button type="button" onclick="copyInsight()">Copy insight</button>
+      <button type="button" class="btnGhost" onclick="resetForm()">Reset form</button>
+    </div>
 
-<button onclick="decode()">Decode + Save</button>
-<button onclick="copySummary()">Copy Insight</button>
-<button onclick="exportJSON()">Export JSON</button>
-<button onclick="exportCSV()">Export CSV</button>
-<input type="file" onchange="importJSON(event)">
+    <div id="softWarn" class="small" style="margin-top:10px"></div>
 
-<div id="summary" class="card"></div>
+    <div id="summary" class="card"></div>
+    <div id="visualLoop" class="loop"></div>
+  </details>
 
-<div id="visualLoop" class="loop"></div>
+  <details open>
+    <summary>3) Insights</summary>
+    <div class="grid2">
+      <div class="card" id="patterns"></div>
+      <div class="card" id="weekly"></div>
+    </div>
 
-<div id="patterns" class="card"></div>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">7-day chart</h3>
+        <canvas id="chart" width="900" height="220"></canvas>
+        <div class="small" style="margin-top:8px">Bars show entries per day. Red shows negative emotion entries.</div>
+      </div>
+      <div class="card" id="deadlines"></div>
+    </div>
+  </details>
 
-<div class="card">
-<h3>History</h3>
-<div id="history"></div>
-</div>
+  <details open>
+    <summary>4) History</summary>
+    <div class="btnRow" style="margin-top:12px">
+      <button type="button" onclick="exportJSON()">Export JSON</button>
+      <button type="button" onclick="exportCSV()">Export CSV</button>
+      <button type="button" class="btnGhost" onclick="clearHistory()">Clear history</button>
+      <label style="margin:0;font-weight:900;display:flex;align-items:center;gap:10px">
+        <span>Import</span>
+        <input id="importFile" type="file" accept=".json,application/json" onchange="importJSON(event)" style="width:auto;margin:0;background:transparent;border:none;padding:0">
+      </label>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Saved entries</h3>
+      <div id="history"></div>
+    </div>
+  </details>
 
 </div>
 
 <script>
+const KEY = "behavior_decoder_entries_v1_2";
+
+function cleanText(s){
+  return (s || "").toString().trim().replace(/\s+/g," ");
+}
+
+function toggleOther(selectId, wrapId){
+  const sel = document.getElementById(selectId);
+  const wrap = document.getElementById(wrapId);
+  if(!sel || !wrap) return;
+  wrap.style.display = (sel.value === "Other") ? "block" : "none";
+}
+
+function pickValue(selectId, otherInputId){
+  const sel = document.getElementById(selectId);
+  if(!sel) return "";
+  if(sel.value === "Other"){
+    const other = document.getElementById(otherInputId);
+    return cleanText(other ? other.value : "");
+  }
+  return cleanText(sel.value);
+}
+
+function isoNowLocal(){
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function fmtLocal(v){
+  if(!v) return "";
+  return v.replace("T"," ");
+}
+
+function toDateSafe(v){
+  const d = new Date(v);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function formatDeadline(v){
+  if(!v) return "";
+  const d = toDateSafe(v);
+  if(!d) return v.replace("T"," ");
+  return d.toLocaleString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function isNegativeEmotion(emotion){
+  const e = (emotion || "").toLowerCase();
+  return ["hopeless","frustrated","anxious","overwhelmed","insecure"].includes(e);
+}
 
 function getEmotionClass(emotion){
-
-emotion = emotion.toLowerCase()
-
-if(["hopeless","frustrated","anxious","overwhelmed"].includes(emotion)) return "red"
-if(["calm","confident","motivated"].includes(emotion)) return "green"
-
-return "yellow"
-
+  const e = (emotion || "").toLowerCase();
+  if(isNegativeEmotion(e)) return "red";
+  if(["calm","confident","motivated","aligned","hopeful"].includes(e)) return "green";
+  return "yellow";
 }
 
-function decode(){
+function loopType(entry){
+  const t = (entry.thought || "").toLowerCase();
+  const e = (entry.emotion || "").toLowerCase();
+  const a = (entry.action || "").toLowerCase();
 
-let dt = document.getElementById("dt").value || new Date().toISOString().slice(0,16)
-let situation = document.getElementById("situation").value
-let thought = document.getElementById("thought").value
-let emotion = document.getElementById("emotion").value
-let intensity = document.getElementById("intensity").value
-let action = document.getElementById("action").value
-let result = document.getElementById("result").value
-let fix = document.getElementById("fix").value
-let deadline = document.getElementById("deadline").value
+  const avoidanceActions = ["avoided","procrastinated","stopped","distracted"];
+  const angerActions = ["argued"];
+  const fearEmotions = ["anxious","insecure"];
+  const lowMood = ["hopeless"];
+  const overwhelm = ["overwhelmed"];
+  const frustration = ["frustrated"];
 
-let sentence1 = `You thought "${thought}", which made you feel "${emotion}". Because of that you "${action}", which resulted in "${result}".`
-let sentence2 = ""
+  if(angerActions.some(x => a.includes(x)) || (a.includes("argued") && e.includes("frustrated"))) return "Anger reaction loop";
+  if(avoidanceActions.some(x => a.includes(x)) && (fearEmotions.includes(e) || t.includes("fail") || t.includes("behind") || t.includes("too hard"))) return "Fear-avoidance loop";
+  if(avoidanceActions.some(x => a.includes(x)) && lowMood.includes(e)) return "Low mood avoidance loop";
+  if(overwhelm.includes(e) && (a.includes("distracted") || a.includes("avoided") || a.includes("procrastinated"))) return "Overwhelm shutdown loop";
+  if(frustration.includes(e) && (a.includes("stopped") || a.includes("avoided"))) return "Frustration quit loop";
 
-if(fix){
-sentence2 = `To correct this loop you will "${fix}" by ${deadline || "the time you decide"}.`
+  if(!isNegativeEmotion(e) && (a.includes("took action") || a.includes("tried") || a.includes("started") || a.includes("stayed"))) return "Momentum loop";
+  return "General loop";
 }
 
-document.getElementById("summary").innerHTML=`
-<h3>Insight</h3>
-<p>${sentence1}</p>
-<p>${sentence2}</p>
-`
-
-document.getElementById("visualLoop").innerHTML=`
-<div><b>Thought</b><br>${thought}</div>
-<div class="${getEmotionClass(emotion)}"><b>Emotion</b><br>${emotion}</div>
-<div><b>Action</b><br>${action}</div>
-<div><b>Result</b><br>${result}</div>
-`
-
-let entry={
-dt,
-situation,
-thought,
-emotion,
-intensity,
-action,
-result,
-fix,
-deadline,
-sentence1,
-sentence2
+function readEntries(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
 }
 
-let data = JSON.parse(localStorage.getItem("decoderData") || "[]")
-data.unshift(entry)
-
-localStorage.setItem("decoderData", JSON.stringify(data))
-
-renderHistory()
-renderPatterns()
-
+function writeEntries(arr){
+  localStorage.setItem(KEY, JSON.stringify(arr));
 }
 
-function renderHistory(){
-
-let data = JSON.parse(localStorage.getItem("decoderData") || "[]")
-
-let html=""
-
-data.forEach(d=>{
-
-html += `
-<div style="border-bottom:1px solid #333;padding:8px 0;">
-<b>${d.dt.replace("T"," ")}</b><br>
-${d.sentence1}<br>
-${d.sentence2}
-</div>
-`
-
-})
-
-document.getElementById("history").innerHTML = html
-
+function mostCommon(arr, key){
+  const map = new Map();
+  for (const item of arr){
+    const v = (item[key] || "").trim();
+    if(!v) continue;
+    map.set(v, (map.get(v) || 0) + 1);
+  }
+  let best = "";
+  let bestN = 0;
+  for (const [k,n] of map.entries()){
+    if(n > bestN){ best = k; bestN = n; }
+  }
+  return best || "None yet";
 }
 
-function renderPatterns(){
-
-let data = JSON.parse(localStorage.getItem("decoderData") || "[]").slice(0,7)
-
-let thoughts={}
-let emotions={}
-let actions={}
-
-data.forEach(d=>{
-
-thoughts[d.thought]=(thoughts[d.thought]||0)+1
-emotions[d.emotion]=(emotions[d.emotion]||0)+1
-actions[d.action]=(actions[d.action]||0)+1
-
-})
-
-function mostCommon(obj){
-
-return Object.entries(obj).sort((a,b)=>b[1]-a[1])[0]?.[0] || "None yet"
-
+function topN(arr, key, n){
+  const map = new Map();
+  for(const item of arr){
+    const v = (item[key] || "").trim();
+    if(!v) continue;
+    map.set(v, (map.get(v) || 0) + 1);
+  }
+  return Array.from(map.entries()).sort((a,b)=>b[1]-a[1]).slice(0,n);
 }
 
-document.getElementById("patterns").innerHTML=`
-<h3>Recent Pattern (Last 7)</h3>
-Thought: ${mostCommon(thoughts)}<br>
-Emotion: ${mostCommon(emotions)}<br>
-Action: ${mostCommon(actions)}
-`
+function buildInsight(entry){
+  const t = entry.thought || "";
+  const e = entry.emotion || "";
+  const a = entry.action || "";
+  const r = entry.result || "";
+  const fx = entry.fix || "";
+  const dlNice = entry.deadline ? formatDeadline(entry.deadline) : "";
+  const lt = loopType(entry);
 
+  const line0 = `Loop type: ${lt}.`;
+  const line1 = `You thought ${t}, which made you feel ${e}. Because of that you ${a}, which resulted in ${r}.`;
+
+  let line2 = "";
+  if (fx){
+    if (dlNice){
+      line2 = `To correct this loop you will ${fx} by ${dlNice}.`;
+    } else {
+      line2 = `To correct this loop you will ${fx}.`;
+    }
+  }
+  return { line0, line1, line2, loopType: lt };
 }
 
-function copySummary(){
+function renderSummary(entry){
+  const { line0, line1, line2 } = buildInsight(entry);
+  const neg = isNegativeEmotion(entry.emotion);
+  document.getElementById("summary").innerHTML = `
+    <h3 style="margin-top:0">Insight</h3>
+    <div class="pill" style="margin-bottom:10px">${neg ? "Negative loop" : "Positive loop"}</div>
+    <div style="line-height:1.5">${line0}</div>
+    <div style="margin-top:8px;line-height:1.5">${line1}</div>
+    ${line2 ? `<div style="margin-top:10px;line-height:1.5">${line2}</div>` : ""}
+  `;
+}
 
-let text = document.getElementById("summary").innerText
-navigator.clipboard.writeText(text)
-alert("Insight copied")
+function renderLoop(entry){
+  document.getElementById("visualLoop").innerHTML = `
+    <div class="box"><b>Thought</b><br>${entry.thought || ""}</div>
+    <div class="box ${getEmotionClass(entry.emotion)}"><b>Emotion</b><br>${entry.emotion || ""}</div>
+    <div class="box"><b>Action</b><br>${entry.action || ""}</div>
+    <div class="box"><b>Result</b><br>${entry.result || ""}</div>
+  `;
+}
 
+function deleteEntry(id){
+  if(!id) return;
+  const entries = readEntries().filter(e => e.id !== id);
+  writeEntries(entries);
+  renderAll();
+}
+
+function clearHistory(){
+  if(!confirm("Clear all saved history?")) return;
+  localStorage.removeItem(KEY);
+  renderAll();
+  alert("History cleared.");
+}
+
+function setCompleted(id, done){
+  const entries = readEntries();
+  const idx = entries.findIndex(e => e.id === id);
+  if(idx === -1) return;
+  entries[idx].completed = !!done;
+  entries[idx].completedAt = done ? Date.now() : null;
+  writeEntries(entries);
+  renderAll();
+}
+
+function resetForm(){
+  document.getElementById("dt").value = isoNowLocal();
+  document.getElementById("situation").value = "";
+  document.getElementById("thoughtPick").selectedIndex = 0;
+  document.getElementById("thoughtOther").value = "";
+  document.getElementById("emotionPick").selectedIndex = 0;
+  document.getElementById("emotionOther").value = "";
+  document.getElementById("intensity").value = "";
+  document.getElementById("actionPick").selectedIndex = 0;
+  document.getElementById("actionOther").value = "";
+  document.getElementById("result").value = "";
+  document.getElementById("fix").value = "";
+  document.getElementById("deadline").value = "";
+  toggleOther("thoughtPick","thoughtOtherWrap");
+  toggleOther("emotionPick","emotionOtherWrap");
+  toggleOther("actionPick","actionOtherWrap");
+  document.getElementById("softWarn").innerHTML = "";
+}
+
+function decodeAndSave(){
+  const dt = document.getElementById("dt").value || isoNowLocal();
+  const situation = cleanText(document.getElementById("situation").value);
+  const thought = pickValue("thoughtPick","thoughtOther");
+  const emotion = pickValue("emotionPick","emotionOther");
+  const intensity = Number(document.getElementById("intensity").value || 0);
+  const action = pickValue("actionPick","actionOther");
+  const result = cleanText(document.getElementById("result").value);
+  const fix = cleanText(document.getElementById("fix").value);
+  const deadline = document.getElementById("deadline").value;
+
+  if(!situation) return alert("Situation is required.");
+  if(!thought) return alert("Thought is required.");
+  if(!emotion) return alert("Emotion is required.");
+  if(!action) return alert("Action is required.");
+  if(!result) return alert("Result is required.");
+
+  if (intensity >= 7){
+    if(!fix) return alert("Add a corrective action when intensity is 7 or higher.");
+    if(!deadline) return alert("Add an action deadline when intensity is 7 or higher.");
+  }
+
+  const entry = {
+    id: (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2)),
+    dt,
+    situation,
+    thought,
+    emotion,
+    intensity,
+    action,
+    result,
+    fix,
+    deadline,
+    completed: false,
+    completedAt: null,
+    createdAt: Date.now()
+  };
+
+  const entries = readEntries();
+  entries.unshift(entry);
+  writeEntries(entries);
+
+  renderSummary(entry);
+  renderLoop(entry);
+  renderAll();
+}
+
+function copyInsight(){
+  const text = document.getElementById("summary").innerText.trim();
+  if(!text) return alert("Nothing to copy yet.");
+  navigator.clipboard.writeText(text);
+  alert("Copied.");
+}
+
+function downloadText(filename, text, mime){
+  const blob = new Blob([text], {type: mime || "text/plain;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 250);
 }
 
 function exportJSON(){
+  const payload = {
+    app: "Behavior Decoder",
+    version: "1.2",
+    exportedAt: new Date().toISOString(),
+    entries: readEntries()
+  };
+  downloadText(`behavior-decoder-export-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(payload, null, 2), "application/json");
+}
 
-let data = localStorage.getItem("decoderData")
-let blob = new Blob([data],{type:"application/json"})
-let url = URL.createObjectURL(blob)
-
-let a = document.createElement("a")
-a.href = url
-a.download = "decoder_backup.json"
-a.click()
-
+function toCsvCell(s){
+  const v = String(s ?? "");
+  if (v.includes('"') || v.includes(",") || v.includes("\n")) return '"' + v.replace(/"/g,'""') + '"';
+  return v;
 }
 
 function exportCSV(){
-
-let data = JSON.parse(localStorage.getItem("decoderData") || "[]")
-
-let csv="dt,situation,thought,emotion,intensity,action,result,fix,deadline\n"
-
-data.forEach(d=>{
-
-csv+=`${d.dt},${d.situation},${d.thought},${d.emotion},${d.intensity},${d.action},${d.result},${d.fix},${d.deadline}\n`
-
-})
-
-let blob = new Blob([csv],{type:"text/csv"})
-let url = URL.createObjectURL(blob)
-
-let a = document.createElement("a")
-a.href = url
-a.download = "decoder_export.csv"
-a.click()
-
+  const entries = readEntries();
+  const headers = ["dt","situation","thought","emotion","intensity","action","result","fix","deadline","completed"];
+  const rows = entries.map(e => headers.map(h => toCsvCell(e[h] ?? "")).join(","));
+  const csv = headers.join(",") + "\n" + rows.join("\n");
+  downloadText(`behavior-decoder-export-${new Date().toISOString().slice(0,10)}.csv`, csv, "text/csv");
 }
 
 function importJSON(event){
-
-let file = event.target.files[0]
-let reader = new FileReader()
-
-reader.onload = function(e){
-
-let imported = JSON.parse(e.target.result)
-let current = JSON.parse(localStorage.getItem("decoderData") || "[]")
-
-let merged = current.concat(imported)
-
-localStorage.setItem("decoderData", JSON.stringify(merged))
-
-renderHistory()
-renderPatterns()
-
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+      const incoming = Array.isArray(data) ? data : (data.entries || []);
+      if(!Array.isArray(incoming)) throw new Error("bad");
+      const current = readEntries();
+      const map = new Map();
+      [...incoming, ...current].forEach(e => { if(e && e.id) map.set(e.id, e); });
+      const merged = Array.from(map.values()).sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+      writeEntries(merged);
+      renderAll();
+      alert("Import complete.");
+    } catch {
+      alert("Import failed. Please choose a valid JSON export file.");
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = "";
 }
 
-reader.readAsText(file)
-
+function upcomingDeadlines(entries){
+  const now = Date.now();
+  return entries
+    .filter(e => e.fix && e.deadline && !e.completed)
+    .map(e => ({...e, d: toDateSafe(e.deadline)}))
+    .filter(e => e.d)
+    .sort((a,b)=>a.d.getTime()-b.d.getTime());
 }
 
-document.getElementById("dt").value = new Date().toISOString().slice(0,16)
+function streak(entries){
+  // streak = consecutive completions in chronological order by completedAt
+  const done = entries.filter(e => e.completed && e.completedAt).sort((a,b)=>b.completedAt-a.completedAt);
+  if(!done.length) return 0;
+  let s = 1;
+  for(let i=1;i<done.length;i++){
+    const prev = new Date(done[i-1].completedAt);
+    const cur = new Date(done[i].completedAt);
+    // if within 36 hours of previous completion, count it as continuing streak (simple and forgiving)
+    if(prev.getTime() - cur.getTime() <= 36*3600*1000){
+      s++;
+    } else {
+      break;
+    }
+  }
+  return s;
+}
 
-renderHistory()
-renderPatterns()
+function renderDeadlines(){
+  const entries = readEntries();
+  const list = upcomingDeadlines(entries).slice(0,6);
+  const now = Date.now();
 
+  const overdue = list.filter(e => e.d.getTime() < now).length;
+
+  document.getElementById("deadlines").innerHTML = `
+    <h3 style="margin-top:0">Upcoming deadlines</h3>
+    <div class="small" style="margin-bottom:10px">${overdue ? "You have overdue corrections. Clear them or update them." : "No overdue corrections right now."}</div>
+    ${list.length ? list.map(e => {
+      const isOver = e.d.getTime() < now;
+      return `
+        <div class="history-item" style="border-top:1px solid #2a2a2a">
+          <div class="rowBetween small">
+            <b>${isOver ? "Overdue" : "Due"}: ${formatDeadline(e.deadline)}</b>
+            <span class="pill">${loopType(e)}</span>
+          </div>
+          <div style="margin-top:6px;line-height:1.45">
+            Correct: <span class="mono">${e.fix}</span>
+          </div>
+          <div class="btnRow" style="margin-top:8px">
+            <button type="button" class="btnGhost" onclick="setCompleted('${e.id}', true)">Mark done</button>
+            <button type="button" class="btnGhost" onclick="openEntry('${e.id}')">Open</button>
+          </div>
+        </div>
+      `;
+    }).join("") : `<div class="small">No deadlines set.</div>`}
+  `;
+}
+
+function renderPatterns(){
+  const entries = readEntries();
+  const last7 = entries.slice(0,7);
+
+  const t = mostCommon(last7, "thought");
+  const e = mostCommon(last7, "emotion");
+  const a = mostCommon(last7, "action");
+
+  const topThoughts = topN(last7, "thought", 3).map(([k,n]) => `${k} (${n})`).join(", ") || "None yet";
+  const topEmotions = topN(last7, "emotion", 3).map(([k,n]) => `${k} (${n})`).join(", ") || "None yet";
+  const topActions = topN(last7, "action", 3).map(([k,n]) => `${k} (${n})`).join(", ") || "None yet";
+
+  const s = streak(entries);
+
+  // trigger detection: most common situation when negative emotion happens
+  const neg = entries.filter(x => isNegativeEmotion(x.emotion)).slice(0,30);
+  const trig = mostCommon(neg, "situation");
+
+  document.getElementById("patterns").innerHTML = `
+    <h3 style="margin-top:0">Fast patterns</h3>
+    <div>Top thought: <span class="mono">${t}</span></div>
+    <div>Top emotion: <span class="mono">${e}</span></div>
+    <div>Top action: <span class="mono">${a}</span></div>
+    <div style="margin-top:10px" class="small">Top 3 (last 7)</div>
+    <div class="small">Thoughts: ${topThoughts}</div>
+    <div class="small">Emotions: ${topEmotions}</div>
+    <div class="small">Actions: ${topActions}</div>
+    <div style="margin-top:10px">Completion streak: <span class="mono">${s}</span></div>
+    <div class="small" style="margin-top:8px">Common trigger (recent negative loops): <span class="mono">${trig}</span></div>
+  `;
+}
+
+function last7DaysBuckets(entries){
+  // returns array of {key, total, neg}
+  const today = new Date();
+  const dayKey = (d) => {
+    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const pad=(n)=>String(n).padStart(2,"0");
+    return `${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}`;
+  };
+
+  const buckets = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+    buckets.push({key: dayKey(d), total:0, neg:0});
+  }
+  const map = new Map(buckets.map(b => [b.key, b]));
+
+  for(const e of entries){
+    const d = toDateSafe(e.dt);
+    if(!d) continue;
+    const k = dayKey(d);
+    if(map.has(k)){
+      map.get(k).total += 1;
+      if(isNegativeEmotion(e.emotion)) map.get(k).neg += 1;
+    }
+  }
+  return buckets;
+}
+
+function renderWeekly(){
+  const entries = readEntries();
+  const buckets = last7DaysBuckets(entries);
+
+  const total = buckets.reduce((s,b)=>s+b.total,0);
+  const neg = buckets.reduce((s,b)=>s+b.neg,0);
+  const corrected = entries.slice(0,200).filter(e => e.completed).length;
+
+  // loop types
+  const types = topN(entries.slice(0,30).map(e => ({type: loopType(e)})), "type", 3)
+    .map(([k,n]) => `${k} (${n})`).join(", ") || "None yet";
+
+  document.getElementById("weekly").innerHTML = `
+    <h3 style="margin-top:0">Weekly snapshot</h3>
+    <div>Entries (7 days): <span class="mono">${total}</span></div>
+    <div>Negative loops: <span class="mono">${neg}</span></div>
+    <div>Corrections completed: <span class="mono">${corrected}</span></div>
+    <div class="small" style="margin-top:8px">Top loop types (recent): ${types}</div>
+  `;
+
+  renderChart(buckets);
+}
+
+function renderChart(buckets){
+  const canvas = document.getElementById("chart");
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  // background
+  ctx.fillStyle = "#161616";
+  ctx.fillRect(0,0,w,h);
+
+  const max = Math.max(1, ...buckets.map(b => b.total));
+  const pad = 22;
+  const barW = (w - pad*2) / buckets.length;
+
+  // axes
+  ctx.strokeStyle = "#2a2a2a";
+  ctx.beginPath();
+  ctx.moveTo(pad, h-pad);
+  ctx.lineTo(w-pad, h-pad);
+  ctx.stroke();
+
+  for(let i=0;i<buckets.length;i++){
+    const b = buckets[i];
+    const x = pad + i*barW + 6;
+    const usableH = h - pad*2;
+    const totalH = (b.total / max) * usableH;
+    const negH = (b.neg / max) * usableH;
+
+    // total bar
+    ctx.fillStyle = "#ffc94a";
+    ctx.fillRect(x, h-pad-totalH, barW-12, totalH);
+
+    // negative overlay (red)
+    ctx.fillStyle = "#d85c5c";
+    ctx.fillRect(x, h-pad-negH, barW-12, negH);
+
+    // labels (day)
+    ctx.fillStyle = "#9a9a9a";
+    ctx.font = "12px Arial";
+    const day = b.key.slice(8); // DD
+    ctx.fillText(day, x+2, h-6);
+  }
+
+  // legend
+  ctx.fillStyle = "#ffc94a";
+  ctx.fillRect(pad, 8, 14, 10);
+  ctx.fillStyle = "#d85c5c";
+  ctx.fillRect(pad+90, 8, 14, 10);
+  ctx.fillStyle = "#cccccc";
+  ctx.font = "12px Arial";
+  ctx.fillText("Total entries", pad+20, 17);
+  ctx.fillText("Negative emotion", pad+110, 17);
+}
+
+function renderHistory(){
+  const entries = readEntries();
+  const el = document.getElementById("history");
+  if(!entries.length){
+    el.innerHTML = `<div class="small">No entries yet.</div>`;
+    return;
+  }
+
+  el.innerHTML = entries.map(d => {
+    const { line0, line1, line2 } = buildInsight(d);
+    const due = d.deadline ? formatDeadline(d.deadline) : "";
+    const overdue = d.deadline && toDateSafe(d.deadline) && (toDateSafe(d.deadline).getTime() < Date.now()) && !d.completed;
+
+    return `
+      <div class="history-item">
+        <div class="rowBetween small">
+          <b>${fmtLocal(d.dt)}</b>
+          <span class="pill">${d.completed ? "Completed" : (overdue ? "Overdue" : "Saved")}</span>
+        </div>
+
+        <div style="margin-top:6px;line-height:1.45">${line0}</div>
+        <div style="margin-top:6px;line-height:1.45">${line1}</div>
+        ${line2 ? `<div style="margin-top:6px;line-height:1.45">${line2}</div>` : ""}
+
+        ${d.fix ? `<div class="small" style="margin-top:8px">Deadline: <span class="mono">${due || "none"}</span></div>` : ""}
+
+        <div class="btnRow" style="margin-top:10px">
+          ${d.fix ? (d.completed
+            ? `<button type="button" class="btnGhost" onclick="setCompleted('${d.id}', false)">Mark not done</button>`
+            : `<button type="button" class="btnGhost" onclick="setCompleted('${d.id}', true)">Mark done</button>`
+          ) : ""}
+          <button type="button" class="btnGhost" onclick="openEntry('${d.id}')">Load into form</button>
+          <button type="button" class="btnGhost" onclick="deleteEntry('${d.id}')">Delete</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function openEntry(id){
+  const e = readEntries().find(x => x.id === id);
+  if(!e) return;
+
+  document.getElementById("dt").value = e.dt || isoNowLocal();
+  document.getElementById("situation").value = e.situation || "";
+
+  // picks
+  setPickOrOther("thoughtPick","thoughtOtherWrap","thoughtOther", e.thought || "");
+  setPickOrOther("emotionPick","emotionOtherWrap","emotionOther", e.emotion || "");
+  setPickOrOther("actionPick","actionOtherWrap","actionOther", e.action || "");
+
+  document.getElementById("intensity").value = (e.intensity ?? "");
+  document.getElementById("result").value = e.result || "";
+  document.getElementById("fix").value = e.fix || "";
+  document.getElementById("deadline").value = e.deadline || "";
+
+  renderSummary(e);
+  renderLoop(e);
+  maybeWarn();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function setPickOrOther(pickId, wrapId, otherId, value){
+  const pick = document.getElementById(pickId);
+  const wrap = document.getElementById(wrapId);
+  const other = document.getElementById(otherId);
+  const opts = Array.from(pick.options).map(o => o.value);
+  if(opts.includes(value)){
+    pick.value = value;
+    wrap.style.display = "none";
+    other.value = "";
+  } else {
+    pick.value = "Other";
+    wrap.style.display = "block";
+    other.value = value;
+  }
+}
+
+function maybeWarn(){
+  const thought = pickValue("thoughtPick","thoughtOther");
+  const emotion = pickValue("emotionPick","emotionOther");
+  const action = pickValue("actionPick","actionOther");
+  const intensity = Number(document.getElementById("intensity").value || 0);
+
+  const entries = readEntries().slice(0,30);
+  const topT = mostCommon(entries, "thought");
+  const topE = mostCommon(entries, "emotion");
+  const topA = mostCommon(entries, "action");
+
+  let msg = "";
+
+  if(thought && emotion && action){
+    const temp = {thought, emotion, action, result:"", fix:"", deadline:""};
+    const lt = loopType(temp);
+    if(isNegativeEmotion(emotion) && intensity >= 7){
+      msg += `High intensity. If you can, add a corrective action and a deadline. `;
+    }
+    if(thought === topT && isNegativeEmotion(emotion)){
+      msg += `This looks like one of your common loops (top thought: ${topT}). `;
+    }
+    if(emotion === topE && isNegativeEmotion(emotion)){
+      msg += `Top negative emotion recently: ${topE}. `;
+    }
+    if(action === topA && action){
+      msg += `Top action recently: ${topA}. `;
+    }
+    msg += `Detected loop type: ${lt}.`;
+  }
+
+  document.getElementById("softWarn").innerText = msg;
+}
+
+function renderAll(){
+  renderPatterns();
+  renderWeekly();
+  renderDeadlines();
+  renderHistory();
+}
+
+window.addEventListener("load", () => {
+  document.getElementById("dt").value = isoNowLocal();
+  toggleOther("thoughtPick","thoughtOtherWrap");
+  toggleOther("emotionPick","emotionOtherWrap");
+  toggleOther("actionPick","actionOtherWrap");
+
+  // demo
+  const demo = {
+    dt: isoNowLocal(),
+    situation: "no replies",
+    thought: "Nobody interested",
+    emotion: "Hopeless",
+    intensity: 8,
+    action: "Stopped trying",
+    result: "no progress",
+    fix: "post again",
+    deadline: isoNowLocal(),
+    completed: false
+  };
+  renderSummary(demo);
+  renderLoop(demo);
+
+  renderAll();
+  maybeWarn();
+});
 </script>
-
 </body>
 </html>
